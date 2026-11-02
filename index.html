@@ -17,7 +17,51 @@
 </head>
 <body class="text-slate-700 p-4 sm:p-8 min-h-screen">
 
-  <div class="max-w-4xl mx-auto space-y-8" id="app">
+  <!-- ==================== TELA DE LOGIN ==================== -->
+  <div id="login-screen" class="max-w-md mx-auto my-12 bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-pink-100 flex flex-col justify-center min-h-[400px]">
+    <div class="text-center mb-6">
+      <span class="text-4xl">💖</span>
+      <h1 class="text-2xl font-bold text-slate-800 mt-2">Família Sartorelli</h1>
+      <p class="text-xs text-pink-400 font-medium mt-1">Entre com seu e-mail e senha para acessar</p>
+    </div>
+
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label class="text-xs font-medium text-slate-500 mb-1 block">E-mail</label>
+        <input 
+          type="email" 
+          id="login-email" 
+          placeholder="seu-email@exemplo.com" 
+          class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-slate-500 mb-1 block">Senha</label>
+        <input 
+          type="password" 
+          id="login-password" 
+          placeholder="••••••••" 
+          class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+          required
+        />
+      </div>
+
+      <p id="login-error" class="text-xs text-rose-500 text-center font-medium hidden"></p>
+
+      <button 
+        type="submit" 
+        id="btn-login"
+        class="w-full bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer mt-4"
+      >
+        Entrar no Sistema 🌸
+      </button>
+    </form>
+  </div>
+
+  <!-- ==================== PAINEL FINANCEIRO (PROTEGIDO) ==================== -->
+  <div class="max-w-4xl mx-auto space-y-8 hidden" id="app">
     
     <!-- Cabeçalho -->
     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-pink-100/60">
@@ -25,7 +69,7 @@
         <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <span class="text-pink-400">💖</span> Família Sartorelli
         </h1>
-        <p class="text-xs text-pink-400 mt-1 font-medium" id="status-conexao">Conectando ao Firebase...</p>
+        <p class="text-xs text-pink-400 mt-1 font-medium" id="status-conexao">Sincronizado ✨</p>
       </div>
       <div class="flex items-center gap-3">
         <!-- Filtro por Mês -->
@@ -39,9 +83,12 @@
             class="bg-transparent text-sm font-medium text-slate-700 focus:outline-none cursor-pointer"
           >
         </div>
-        <div class="hidden sm:flex items-center gap-1.5 bg-rose-100/60 text-rose-600 px-4 py-2.5 rounded-2xl text-sm font-medium border border-rose-200/50">
-          <span>💕</span> Nosso Canto
-        </div>
+        <button 
+          id="btn-logout" 
+          class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-4 py-2.5 rounded-2xl text-sm font-medium border border-rose-200/50 transition cursor-pointer"
+        >
+          <span>🚪</span> Sair
+        </button>
       </div>
     </header>
 
@@ -193,30 +240,87 @@
   <!-- Scripts do Firebase v10 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // ⚙️ SUBSTITUA COM AS SUAS CONFIGURAÇÕES DO FIREBASE
+    // Configuração oficial do seu Firebase
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "seu-projeto.firebaseapp.com",
-      projectId: "seu-projeto-id",
-      storageBucket: "seu-projeto.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abcdef123456"
+      apiKey: "AIzaSyBT4qMawtbY1ZmPJoqCrxJzZX0aP2cnKIw",
+      authDomain: "nossodinheirosartorelli.firebaseapp.com",
+      projectId: "nossodinheirosartorelli",
+      storageBucket: "nossodinheirosartorelli.firebasestorage.app",
+      messagingSenderId: "552307426877",
+      appId: "1:552307426877:web:14e876a033ed53ce814c54",
+      measurementId: "G-BEH83YNTPZ"
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    document.getElementById('status-conexao').innerText = 'Sincronizado ✨';
+    const loginScreen = document.getElementById('login-screen');
+    const appScreen = document.getElementById('app');
+    const loginError = document.getElementById('login-error');
 
-    // Definir o mês atual no filtro
-    const now = new Date();
-    const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    document.getElementById('filter-month').value = currentYearMonth;
-    
-    // Data de vencimento padrão para hoje
-    document.getElementById('dueDate').value = now.toISOString().split('T')[0];
+    // Monitorar estado de autenticação (Usuário Logado x Deslogado)
+    let unsubscribeFirestore = null;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Usuário AUTENTICADO
+        loginScreen.classList.add('hidden');
+        appScreen.classList.remove('hidden');
+        initApp();
+      } else {
+        // Usuário DESLOGADO
+        loginScreen.classList.remove('hidden');
+        appScreen.classList.add('hidden');
+        if (unsubscribeFirestore) unsubscribeFirestore();
+      }
+    });
+
+    // Login Form Submit
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      loginError.classList.add('hidden');
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        console.error("Erro no login:", err);
+        loginError.innerText = "E-mail ou senha incorretos. Tente novamente.";
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await signOut(auth);
+    });
+
+    // Inicialização da aplicação após login
+    function initApp() {
+      const now = new Date();
+      const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      document.getElementById('filter-month').value = currentYearMonth;
+      document.getElementById('dueDate').value = now.toISOString().split('T')[0];
+
+      // Ler dados do Firestore
+      const q = query(collection(db, 'transactions'), orderBy('dueDate', 'asc'));
+      
+      unsubscribeFirestore = onSnapshot(q, (snapshot) => {
+        allTransactions = [];
+        snapshot.forEach((docSnap) => {
+          allTransactions.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        filterAndRenderApp();
+      }, (error) => {
+        console.error("Erro ao carregar dados:", error);
+        document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-6 text-sm">Erro ao conectar ao Firestore.</p>';
+      });
+    }
 
     const categoriesMap = {
       expense: [
@@ -264,20 +368,7 @@
     };
     window.handleTypeChange();
 
-    // Ler dados do Firestore
     let allTransactions = [];
-    const q = query(collection(db, 'transactions'), orderBy('dueDate', 'asc'));
-    
-    onSnapshot(q, (snapshot) => {
-      allTransactions = [];
-      snapshot.forEach((docSnap) => {
-        allTransactions.push({ id: docSnap.id, ...docSnap.data() });
-      });
-      filterAndRenderApp();
-    }, (error) => {
-      console.error("Erro ao carregar dados:", error);
-      document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-6 text-sm">Erro ao conectar ao Firestore.</p>';
-    });
 
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
 
@@ -289,7 +380,6 @@
         return t.dueDate.startsWith(selectedMonth);
       });
 
-      // Ordenar por Vencimento (mais próximo primeiro)
       filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
       renderApp(filtered);
@@ -309,7 +399,6 @@
 
       try {
         if (editingId) {
-          // Atualizar conta existente
           const docRef = doc(db, 'transactions', editingId);
           await updateDoc(docRef, {
             description,
@@ -321,7 +410,6 @@
             isPaid
           });
         } else {
-          // Adicionar nova conta
           await addDoc(collection(db, 'transactions'), {
             description,
             amount,
@@ -334,7 +422,6 @@
           });
         }
 
-        // LIMPEZA GARANTIDA DOS CAMPOS
         cancelEdit();
 
       } catch (err) {
@@ -343,7 +430,6 @@
       }
     });
 
-    // Iniciar edição
     window.startEditTransaction = function(id) {
       const t = allTransactions.find(item => item.id === id);
       if (!t) return;
@@ -362,16 +448,13 @@
       document.getElementById('dueDate').value = t.dueDate;
       document.getElementById('isPaid').checked = !!t.isPaid;
 
-      // Alterar UI para modo edição
       document.getElementById('form-title').innerHTML = '<span class="text-amber-500">✏️</span> Editar Lançamento';
       document.getElementById('btn-submit').innerText = 'Atualizar Lançamento 🌸';
       document.getElementById('btn-cancel-edit').classList.remove('hidden');
 
-      // Scroll até o formulário
       document.getElementById('transaction-form').scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Reseta o formulário e limpa todos os campos
     window.cancelEdit = function() {
       document.getElementById('editing-id').value = '';
       document.getElementById('description').value = '';
@@ -425,7 +508,6 @@
 
       const balance = totalIncome - totalExpense;
 
-      // Atualizar Cards
       document.getElementById('total-balance').innerText = `R$ ${balance.toFixed(2)}`;
       document.getElementById('total-balance').className = `text-2xl font-bold mt-2 ${balance >= 0 ? 'text-slate-800' : 'text-rose-500'}`;
       document.getElementById('total-income').innerText = `R$ ${totalIncome.toFixed(2)}`;
