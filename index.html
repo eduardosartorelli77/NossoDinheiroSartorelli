@@ -386,6 +386,7 @@
       const now = new Date();
       document.getElementById('filter-month').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       document.getElementById('dueDate').value = now.toISOString().split('T')[0];
+      document.getElementById('isPaid').checked = false;
 
       const q = query(collection(db, 'transactions'), orderBy('dueDate', 'asc'));
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
@@ -401,8 +402,9 @@
 
       categorySelect.innerHTML = categoriesMap[type].map(cat => `<option value="${cat}">${cat}</option>`).join('');
       document.getElementById('person-container').classList.toggle('hidden', !isIncome);
-      document.getElementById('paid-container').classList.toggle('hidden', isIncome);
-      document.getElementById('isPaid').checked = isIncome;
+      document.getElementById('paid-container').classList.remove('hidden');
+      // Por padrão, não marcar "Pago" ao trocar o tipo ou abrir novo lançamento
+      document.getElementById('isPaid').checked = false;
     };
     window.handleTypeChange();
 
@@ -451,7 +453,36 @@
 
       try {
         if (editingId) {
-          await updateDoc(doc(db, 'transactions', editingId), { description: rawDescription, amount, type, category, person, dueDate: baseDueDate, isPaid });
+          const targetT = allTransactions.find(item => item.id === editingId);
+          if (targetT && targetT.installmentGroupId) {
+            // Se for um item parcelado, pergunta se deseja atualizar apenas esta parcela ou todo o grupo / parcelas futuras
+            const groupItems = allTransactions.filter(item => item.installmentGroupId === targetT.installmentGroupId).sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
+            const choice = confirm("Este é um lançamento parcelado.\n\nDeseja atualizar TODO O GRUPO de parcelas com os novos dados (valor, vencimento, quantidade)?\n\n(Clique em [OK] para atualizar o grupo ou [Cancelar] para atualizar apenas esta parcela individual).");
+            
+            if (choice) {
+              const batch = writeBatch(db);
+              // Deleta todas as parcelas antigas do grupo e recria com os novos parâmetros a partir da data informada
+              groupItems.forEach(item => batch.delete(doc(db, 'transactions', item.id)));
+              
+              const newGroupId = `inst_${Date.now()}`;
+              for (let i = 0; i < installmentCount; i++) {
+                const newRef = doc(collection(db, 'transactions'));
+                batch.set(newRef, {
+                  description: `${rawDescription} (${i + 1}/${installmentCount})`,
+                  amount, type, category, person,
+                  dueDate: addMonthsToDate(baseDueDate, i),
+                  isPaid: i === 0 ? isPaid : false,
+                  createdAt: new Date().toISOString(),
+                  installmentGroupId: newGroupId
+                });
+              }
+              await batch.commit();
+            } else {
+              await updateDoc(doc(db, 'transactions', editingId), { description: rawDescription, amount, type, category, person, dueDate: baseDueDate, isPaid });
+            }
+          } else {
+            await updateDoc(doc(db, 'transactions', editingId), { description: rawDescription, amount, type, category, person, dueDate: baseDueDate, isPaid });
+          }
         } else if (isInstallment && installmentCount > 1) {
           const installmentGroupId = `inst_${Date.now()}`;
           const batch = writeBatch(db);
@@ -461,7 +492,7 @@
               description: `${rawDescription} (${i + 1}/${installmentCount})`,
               amount, type, category, person,
               dueDate: addMonthsToDate(baseDueDate, i),
-              isPaid: i === 0 ? isPaid : (type === 'income'),
+              isPaid: i === 0 ? isPaid : false,
               createdAt: new Date().toISOString(),
               installmentGroupId
             });
@@ -482,7 +513,9 @@
       if (!t) return;
 
       document.getElementById('editing-id').value = t.id;
-      document.getElementById('description').value = t.description;
+      // Remove o sufixo de parcela (ex: " (1/12)") da descrição para facilitar a edição limpa
+      const cleanDesc = t.description ? t.description.replace(/\s*\(\d+\/\d+\)\s*$/, '').trim() : '';
+      document.getElementById('description').value = cleanDesc || t.description;
       document.getElementById('amount').value = t.amount;
       document.getElementById('type').value = t.type;
       handleTypeChange();
@@ -490,9 +523,20 @@
       if (t.type === 'income' && t.person) document.getElementById('person').value = t.person;
       document.getElementById('dueDate').value = t.dueDate;
       document.getElementById('isPaid').checked = !!t.isPaid;
-      document.getElementById('installment-container').classList.add('hidden');
 
-      document.getElementById('form-title').innerHTML = '<span class="text-amber-500">✏️</span> Editar Lançamento';
+      // Se for parcelado, permite reajustar o parcelamento na edição
+      const groupItems = t.installmentGroupId ? allTransactions.filter(item => item.installmentGroupId === t.installmentGroupId) : [];
+      if (groupItems.length > 0) {
+        document.getElementById('isInstallment').checked = true;
+        toggleInstallmentOptions();
+        document.getElementById('installmentCount').value = groupItems.length;
+      } else {
+        document.getElementById('isInstallment').checked = false;
+        toggleInstallmentOptions();
+      }
+      document.getElementById('installment-container').classList.remove('hidden');
+
+      document.getElementById('form-title').innerHTML = '<span class="text-amber-500">✏️</span> Editar Lançamento Parcelado / Único';
       document.getElementById('btn-submit').innerText = 'Atualizar Lançamento 🌸';
       document.getElementById('btn-cancel-edit').classList.remove('hidden');
       document.getElementById('transaction-form').scrollIntoView({ behavior: 'smooth' });
@@ -504,6 +548,7 @@
       document.getElementById('amount').value = '';
       document.getElementById('type').value = 'expense';
       document.getElementById('dueDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('isPaid').checked = false; // Garantir desmarcado
       document.getElementById('isInstallment').checked = false;
       document.getElementById('installmentCount').value = '2';
       toggleInstallmentOptions();
@@ -513,6 +558,45 @@
       document.getElementById('btn-submit').innerText = 'Lançar Conta 🌸';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
       handleTypeChange();
+      document.getElementById('isPaid').checked = false; // Garantir após handleTypeChange
+    };
+
+    window.payOffInstallments = async function(id) {
+      const targetTransaction = allTransactions.find(t => t.id === id);
+      if (!targetTransaction) return;
+
+      let pendingInstallments = [];
+
+      if (targetTransaction.installmentGroupId) {
+        const groupId = targetTransaction.installmentGroupId;
+        pendingInstallments = allTransactions.filter(
+          t => t.installmentGroupId === groupId && !t.isPaid
+        );
+      } else {
+        // Fallback para parcelados antigos sem groupId (agrupados por descrição base e tipo/valor similar)
+        const baseDesc = targetTransaction.description.replace(/\s*\(\d+\/\d+\)\s*$/, '').trim();
+        pendingInstallments = allTransactions.filter(t => {
+          const tBaseDesc = t.description ? t.description.replace(/\s*\(\d+\/\d+\)\s*$/, '').trim() : '';
+          return tBaseDesc === baseDesc && t.type === targetTransaction.type && !t.isPaid;
+        });
+      }
+
+      if (!pendingInstallments.length) {
+        alert("Não há parcelas pendentes para antecipar neste grupo.");
+        return;
+      }
+
+      const isInc = targetTransaction.type === 'income';
+      const term = isInc ? 'RECEBIDAS / QUITADAS' : 'PAGAS';
+
+      if (confirm(`Deseja marcar como ${term} todas as ${pendingInstallments.length} parcelas futuras restantes deste lançamento?`)) {
+        const batch = writeBatch(db);
+        pendingInstallments.forEach(item => {
+          // Se não tiver installmentGroupId, podemos aproveitar para injetar ou só atualizar isPaid
+          batch.update(doc(db, 'transactions', item.id), { isPaid: true });
+        });
+        await batch.commit();
+      }
     };
 
     window.togglePaidStatus = async function(id, currentStatus) {
@@ -591,8 +675,11 @@
                 ${isInc ? '+' : '-'} R$ ${t.amount.toFixed(2)}
               </span>
               <div class="flex items-center gap-1">
-                <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1.5 cursor-pointer">✏️</button>
-                <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1.5 cursor-pointer">🗑️</button>
+                ${(t.installmentGroupId || /\(\d+\/\d+\)/.test(t.description)) && !t.isPaid ? `
+                  <button onclick="payOffInstallments('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition p-1.5 cursor-pointer" title="Antecipar quitação de parcelas restantes">⚡</button>
+                ` : ''}
+                <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1.5 cursor-pointer" title="Editar">✏️</button>
+                <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1.5 cursor-pointer" title="Excluir">🗑️</button>
               </div>
             </div>
           </div>
