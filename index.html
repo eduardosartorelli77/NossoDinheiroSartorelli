@@ -156,12 +156,12 @@
             <input type="text" id="description" placeholder="Ex: Conta de Luz, Mercado..." class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" required />
           </div>
 
-          <div>
+          <div class="sm:col-span-1">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Valor (R$)</label>
             <input type="number" step="0.01" id="amount" placeholder="0,00" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" required />
           </div>
 
-          <div>
+          <div class="sm:col-span-1">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Tipo</label>
             <select id="type" onchange="handleTypeChange()" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
               <option value="expense">Despesa</option>
@@ -169,12 +169,13 @@
             </select>
           </div>
 
-          <div>
+          <!-- Categoria com mais espaço e texto ajustado -->
+          <div class="sm:col-span-2">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
-            <select id="category" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"></select>
+            <select id="category" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm truncate"></select>
           </div>
 
-          <div id="person-container" class="hidden">
+          <div id="person-container" class="hidden sm:col-span-2">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Quem Recebeu?</label>
             <select id="person" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
               <option value="Ambos">Ambos</option>
@@ -183,12 +184,12 @@
             </select>
           </div>
 
-          <div id="date-container" class="sm:col-span-3">
+          <div id="date-container" class="sm:col-span-4">
             <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento / Data</label>
             <input type="date" id="dueDate" onclick="this.showPicker()" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer" required />
           </div>
 
-          <div id="paid-container" class="sm:col-span-3 flex items-center justify-start px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/30 self-end">
+          <div id="paid-container" class="sm:col-span-2 flex items-center justify-start px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/30 self-end">
             <div class="flex items-center gap-2">
               <input type="checkbox" id="isPaid" class="w-4 h-4 text-emerald-500 rounded border-pink-200 focus:ring-emerald-300 accent-emerald-500">
               <label for="isPaid" class="text-xs font-medium text-slate-700 cursor-pointer">Pago</label>
