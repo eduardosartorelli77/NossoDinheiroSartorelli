@@ -72,8 +72,7 @@
           <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
             <span class="text-pink-400">💖</span> Família Sartorelli
           </h1>
-          <!-- Tag no mesmo estilo do botão de gráfico, porém na cor AZUL -->
-          <span class="inline-flex items-center gap-1.5 bg-sky-50/80 hover:bg-sky-100/80 text-sky-600 px-3 py-1.5 rounded-2xl text-xs font-semibold border border-sky-200/80 transition cursor-default">
+          <span class="inline-flex items-center gap-1.5 bg-sky-50/85 hover:bg-sky-100/80 text-sky-600 px-3 py-1.5 rounded-2xl text-xs font-semibold border border-sky-200/80 transition cursor-default">
             🏡 Planejamento para Nova Casa
           </span>
         </div>
@@ -173,7 +172,6 @@
             </select>
           </div>
 
-          <!-- Categoria com mais espaço e texto ajustado -->
           <div class="sm:col-span-2">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
             <select id="category" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm truncate"></select>
@@ -235,7 +233,7 @@
             <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
           </div>
           
-          <!-- CAMPO DE BUSCA REINSERIDO -->
+          <!-- Campo de Busca -->
           <div class="relative w-full sm:w-64">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">🔍</span>
             <input 
@@ -393,6 +391,9 @@
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
         allTransactions = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
         filterAndRenderApp();
+      }, (error) => {
+        console.error("Erro ao carregar do Firestore:", error);
+        document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-8 text-sm">Erro ao carregar dados da nuvem. Verifique sua conexão.</p>';
       });
     }
 
@@ -410,10 +411,10 @@
 
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
 
-    // FUNÇÃO ATUALIZADA PARA INCLUIR A BUSCA POR TEXTO
     window.filterAndRenderApp = function() {
       const selectedMonth = document.getElementById('filter-month').value;
-      const searchText = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+      const searchInput = document.getElementById('search-input');
+      const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
       currentFilteredTransactions = allTransactions
         .filter(t => {
@@ -560,7 +561,7 @@
 
       const listEl = document.getElementById('transactions-list');
       if (!transactions.length) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas encontradas para este filtro. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para os filtros atuais. 🌸</p>';
         return;
       }
 
@@ -602,9 +603,7 @@
       }).join('');
     }
 
-    // RENDERIZAÇÃO E INTERATIVIDADE DOS GRÁFICOS DE PIZZA
     function renderCharts(transactions) {
-      // 1. Gráfico de Despesas
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
@@ -637,7 +636,6 @@
         });
       }
 
-      // 2. Gráfico de Receitas
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
@@ -674,8 +672,7 @@
       }
     }
 
-    // EXIBIR LANÇAMENTOS DO ITEM CLICADO NO GRÁFICO
-    function showChartCategoryDetails(type, filterKey) {
+    window.showChartCategoryDetails = function(type, filterKey) {
       const container = document.getElementById('chart-details-container');
       const title = document.getElementById('chart-details-title');
       const list = document.getElementById('chart-details-list');
