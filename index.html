@@ -54,7 +54,6 @@
 
       <button 
         type="submit" 
-        id="btn-login"
         class="w-full bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer mt-4"
       >
         Entrar no Sistema 🌸
@@ -65,18 +64,16 @@
   <!-- ==================== PAINEL FINANCEIRO (PROTEGIDO) ==================== -->
   <div class="max-w-4xl mx-auto space-y-4 sm:space-y-8 hidden" id="app">
     
-    <!-- Cabeçalho Reformulado -->
+    <!-- Cabeçalho -->
     <header class="bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <!-- Título e Subtítulo -->
         <div>
           <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
             <span class="text-pink-400">💖</span> Família Sartorelli
           </h1>
-          <p class="text-xs text-pink-400 mt-0.5 font-medium" id="status-conexao">Planejamento para Nova Casa</p>
+          <p class="text-xs text-pink-400 mt-0.5 font-medium">Planejamento para Nova Casa</p>
         </div>
 
-        <!-- Ações do Topo (Abas, Filtro e Sair) -->
         <div class="flex items-center gap-2 flex-wrap">
           <button 
             id="btn-tab-list" 
@@ -103,7 +100,6 @@
             💾
           </button>
 
-          <!-- Filtro por Mês -->
           <div class="flex items-center gap-1.5 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-1.5 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
             <span class="text-xs">📅</span>
             <label for="filter-month" class="text-[10px] sm:text-xs font-semibold text-pink-600 uppercase tracking-wider cursor-pointer">MÊS:</label>
@@ -115,7 +111,6 @@
             >
           </div>
 
-          <!-- Botão Sair -->
           <button 
             id="btn-logout" 
             class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-1.5 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer ml-auto sm:ml-0"
@@ -133,28 +128,22 @@
         <p id="total-balance" class="text-lg sm:text-2xl font-bold mt-1 text-slate-800">R$ 0,00</p>
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-emerald-100/50">
-        <p class="text-[10px] sm:text-[11px] text-emerald-500 font-bold uppercase tracking-wider flex items-center gap-1">
-          🌱 Receitas
-        </p>
+        <p class="text-[10px] sm:text-[11px] text-emerald-500 font-bold uppercase tracking-wider flex items-center gap-1">🌱 Receitas</p>
         <p id="total-income" class="text-lg sm:text-2xl font-bold text-slate-800 mt-1">R$ 0,00</p>
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-rose-100/50">
-        <p class="text-[10px] sm:text-[11px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
-          🌷 Despesas Pagas
-        </p>
+        <p class="text-[10px] sm:text-[11px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">🌷 Despesas Pagas</p>
         <p id="total-expense" class="text-lg sm:text-2xl font-bold text-slate-800 mt-1">R$ 0,00</p>
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-amber-100/50">
-        <p class="text-[10px] sm:text-[11px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">
-          ⏳ Pendentes
-        </p>
+        <p class="text-[10px] sm:text-[11px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">⏳ Pendentes</p>
         <p id="total-pending" class="text-lg sm:text-2xl font-bold text-slate-800 mt-1">R$ 0,00</p>
       </div>
     </div>
 
     <!-- SEÇÃO 1: FORMULÁRIO E LISTA DE LANÇAMENTOS -->
     <div id="view-list" class="space-y-4 sm:space-y-8">
-      <!-- Formulário de Adição / Edição -->
+      <!-- Formulário -->
       <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
         <h2 id="form-title" class="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <span class="text-pink-400">✨</span> Novo Lançamento
@@ -164,34 +153,17 @@
           
           <div class="sm:col-span-2">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Descrição</label>
-            <input 
-              type="text" 
-              id="description" 
-              placeholder="Ex: Conta de Luz, Mercado..." 
-              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-              required
-            />
+            <input type="text" id="description" placeholder="Ex: Conta de Luz, Mercado..." class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" required />
           </div>
 
           <div>
             <label class="text-xs font-medium text-slate-500 mb-1 block">Valor (R$)</label>
-            <input 
-              type="number" 
-              step="0.01" 
-              id="amount" 
-              placeholder="0,00" 
-              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-              required
-            />
+            <input type="number" step="0.01" id="amount" placeholder="0,00" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm" required />
           </div>
 
           <div>
             <label class="text-xs font-medium text-slate-500 mb-1 block">Tipo</label>
-            <select 
-              id="type" 
-              onchange="handleTypeChange()"
-              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            >
+            <select id="type" onchange="handleTypeChange()" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
               <option value="expense">Despesa</option>
               <option value="income">Receita</option>
             </select>
@@ -199,40 +171,23 @@
 
           <div>
             <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
-            <select 
-              id="category" 
-              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            >
-              <!-- Preenchido via script -->
-            </select>
+            <select id="category" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"></select>
           </div>
 
-          <!-- Seletor de pessoa (Receitas) -->
           <div id="person-container" class="hidden">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Quem Recebeu?</label>
-            <select 
-              id="person" 
-              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            >
+            <select id="person" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm">
               <option value="Ambos">Ambos</option>
               <option value="Marido">Marido</option>
               <option value="Esposa">Esposa</option>
             </select>
           </div>
 
-          <!-- Campo de Vencimento -->
           <div id="date-container" class="sm:col-span-3">
             <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento / Data</label>
-            <input 
-              type="date" 
-              id="dueDate" 
-              onclick="this.showPicker()"
-              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer"
-              required
-            />
+            <input type="date" id="dueDate" onclick="this.showPicker()" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer" required />
           </div>
 
-          <!-- Opção de Pago -->
           <div id="paid-container" class="sm:col-span-3 flex items-center justify-start px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/30 self-end">
             <div class="flex items-center gap-2">
               <input type="checkbox" id="isPaid" class="w-4 h-4 text-emerald-500 rounded border-pink-200 focus:ring-emerald-300 accent-emerald-500">
@@ -240,7 +195,6 @@
             </div>
           </div>
 
-          <!-- OPÇÕES DE PARCELAMENTO -->
           <div id="installment-container" class="sm:col-span-6 bg-purple-50/40 p-3.5 rounded-2xl border border-purple-100 mt-1">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
               <div class="flex items-center gap-2">
@@ -251,42 +205,17 @@
               <div id="installment-fields" class="hidden flex items-center gap-2 pl-6 sm:pl-0">
                 <label for="installmentCount" class="text-xs font-medium text-slate-600">Nº de Parcelas:</label>
                 <select id="installmentCount" class="px-3 py-1.5 rounded-xl border border-purple-200 bg-white text-xs font-semibold text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-300">
-                  <option value="2">2x</option>
-                  <option value="3">3x</option>
-                  <option value="4">4x</option>
-                  <option value="5">5x</option>
-                  <option value="6">6x</option>
-                  <option value="7">7x</option>
-                  <option value="8">8x</option>
-                  <option value="9">9x</option>
-                  <option value="10">10x</option>
-                  <option value="11">11x</option>
-                  <option value="12">12x</option>
-                  <option value="18">18x</option>
-                  <option value="24">24x</option>
-                  <option value="36">36x</option>
-                  <option value="48">48x</option>
-                  <option value="60">60x</option>
-                  <option value="72">72x</option>
+                  <option value="2">2x</option><option value="3">3x</option><option value="4">4x</option><option value="5">5x</option><option value="6">6x</option><option value="7">7x</option><option value="8">8x</option><option value="9">9x</option><option value="10">10x</option><option value="11">11x</option><option value="12">12x</option><option value="18">18x</option><option value="24">24x</option><option value="36">36x</option><option value="48">48x</option><option value="60">60x</option><option value="72">72x</option>
                 </select>
               </div>
             </div>
           </div>
 
           <div class="sm:col-span-6 flex items-center gap-2 mt-2">
-            <button 
-              type="submit" 
-              id="btn-submit"
-              class="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-            >
+            <button type="submit" id="btn-submit" class="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer">
               Lançar Conta 🌸
             </button>
-            <button 
-              type="button" 
-              id="btn-cancel-edit"
-              onclick="cancelEdit()"
-              class="hidden bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-6 rounded-2xl transition text-sm cursor-pointer"
-            >
+            <button type="button" id="btn-cancel-edit" onclick="cancelEdit()" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-6 rounded-2xl transition text-sm cursor-pointer">
               Cancelar
             </button>
           </div>
@@ -305,40 +234,51 @@
       </div>
     </div>
 
-    <!-- SEÇÃO 2: GRÁFICOS (DESPESAS E RECEITAS) -->
+    <!-- SEÇÃO 2: GRÁFICOS E INTERATIVIDADE -->
     <div id="view-chart" class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden space-y-6">
       <h2 class="text-base sm:text-lg font-semibold text-slate-800 flex items-center gap-2">
         <span class="text-pink-400">📊</span> Gráficos de Gastos e Receitas do Mês
       </h2>
-      
+      <p class="text-xs text-slate-400 -mt-4">Clique em qualquer categoria nos gráficos abaixo para ver os lançamentos correspondentes.</p>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <!-- Gráfico de Despesas (Todas) -->
         <div class="bg-rose-50/30 p-4 rounded-2xl border border-rose-100 flex flex-col items-center">
-          <h3 class="text-xs sm:text-sm font-bold text-rose-500 mb-2">🌷 Despesas por Categoria (Todas)</h3>
+          <h3 class="text-xs sm:text-sm font-bold text-rose-500 mb-2">🌷 Despesas por Categoria</h3>
           <div class="w-full max-w-[280px]">
-            <canvas id="expenseChart"></canvas>
+            <canvas id="expenseChart" class="cursor-pointer"></canvas>
           </div>
         </div>
 
-        <!-- Gráfico de Receitas (Por Pessoa) -->
         <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center">
           <h3 class="text-xs sm:text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Pessoa</h3>
           <div class="w-full max-w-[280px]">
-            <canvas id="incomeChart"></canvas>
+            <canvas id="incomeChart" class="cursor-pointer"></canvas>
           </div>
         </div>
+      </div>
+
+      <!-- PAINEL DE DETALHAMENTO DE LANÇAMENTOS SELECIONADOS NO GRÁFICO -->
+      <div id="chart-details-container" class="hidden bg-slate-50/70 p-4 sm:p-5 rounded-2xl border border-pink-100 space-y-3">
+        <div class="flex justify-between items-center border-b border-pink-100/60 pb-2">
+          <h3 id="chart-details-title" class="text-sm font-bold text-slate-800 flex items-center gap-2">
+            <span>📌</span> Detalhes da Categoria
+          </h3>
+          <button onclick="document.getElementById('chart-details-container').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-xs cursor-pointer font-bold">
+            ✖ Fechar
+          </button>
+        </div>
+        <div id="chart-details-list" class="space-y-2"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- Scripts do Firebase v10 -->
+  <!-- Scripts Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Configuração oficial do seu Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBT4qMawtbY1ZmPJoqCrxJzZX0aP2cnKIw",
       authDomain: "nossodinheirosartorelli.firebaseapp.com",
@@ -363,55 +303,42 @@
     let currentFilteredTransactions = [];
     let allTransactions = [];
 
-    // Função de Backup Local (Exportar JSON)
-    window.exportBackup = function() {
-      if (!allTransactions || allTransactions.length === 0) {
-        alert("Não há dados para exportar.");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allTransactions, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      const dateStr = new Date().toISOString().split('T')[0];
-      downloadAnchor.setAttribute("download", `backup_familia_sartorelli_${dateStr}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+    const categoriesMap = {
+      expense: ['🏠 Contas de Consumo', '🛃 Moradia', '🛒 Mercado', '🍽️ Alimentação', '📚 Educação', '🎉 Lazer', '🚗 Carro', '🏥 Saúde', '🕊️ Terreiro', '🪞 Estética', '💳 Compras On-Line', '📦 Outros'],
+      income: ['💰 Salário' ]
     };
 
-    // Alternar visibilidade das opções de parcelamento
+    window.exportBackup = function() {
+      if (!allTransactions.length) return alert("Não há dados para exportar.");
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allTransactions, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `backup_familia_sartorelli_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      a.remove();
+    };
+
     window.toggleInstallmentOptions = function() {
       const isInstallment = document.getElementById('isInstallment').checked;
-      const installmentFields = document.getElementById('installment-fields');
-      if (isInstallment) {
-        installmentFields.classList.remove('hidden');
-      } else {
-        installmentFields.classList.add('hidden');
-      }
+      document.getElementById('installment-fields').classList.toggle('hidden', !isInstallment);
     };
 
-    // Alternar entre abas
     window.switchTab = function(tabName) {
-      const viewList = document.getElementById('view-list');
-      const viewChart = document.getElementById('view-chart');
-      const btnTabList = document.getElementById('btn-tab-list');
-      const btnTabChart = document.getElementById('btn-tab-chart');
+      const isList = tabName === 'list';
+      document.getElementById('view-list').classList.toggle('hidden', !isList);
+      document.getElementById('view-chart').classList.toggle('hidden', isList);
+      
+      document.getElementById('btn-tab-list').className = isList 
+        ? "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer flex items-center gap-1.5"
+        : "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer flex items-center gap-1.5";
+      
+      document.getElementById('btn-tab-chart').className = !isList
+        ? "bg-pink-100 text-pink-700 p-2 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center"
+        : "bg-white/80 text-slate-600 hover:bg-pink-50 p-2 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center";
 
-      if (tabName === 'list') {
-        viewList.classList.remove('hidden');
-        viewChart.classList.add('hidden');
-        btnTabList.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer flex items-center gap-1.5";
-        btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 p-2 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center";
-      } else {
-        viewList.classList.add('hidden');
-        viewChart.classList.remove('hidden');
-        btnTabChart.className = "bg-pink-100 text-pink-700 p-2 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
-        btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer flex items-center gap-1.5";
-        renderCharts(currentFilteredTransactions);
-      }
+      if (!isList) renderCharts(currentFilteredTransactions);
     };
 
-    // Monitorar estado de autenticação
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginScreen.classList.add('hidden');
@@ -424,92 +351,40 @@
       }
     });
 
-    // Login Form Submit
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
       loginError.classList.add('hidden');
-
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
       } catch (err) {
-        console.error("Erro no login:", err);
         loginError.innerText = "E-mail ou senha incorretos. Tente novamente.";
         loginError.classList.remove('hidden');
       }
     });
 
-    // Logout
-    document.getElementById('btn-logout').addEventListener('click', async () => {
-      await signOut(auth);
-    });
+    document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
-    // Inicialização da aplicação após login
     function initApp() {
       const now = new Date();
-      const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      document.getElementById('filter-month').value = currentYearMonth;
+      document.getElementById('filter-month').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       document.getElementById('dueDate').value = now.toISOString().split('T')[0];
 
       const q = query(collection(db, 'transactions'), orderBy('dueDate', 'asc'));
-      
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
-        allTransactions = [];
-        snapshot.forEach((docSnap) => {
-          allTransactions.push({ id: docSnap.id, ...docSnap.data() });
-        });
+        allTransactions = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
         filterAndRenderApp();
-      }, (error) => {
-        console.error("Erro ao carregar dados:", error);
-        document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-6 text-sm">Erro ao conectar ao Firestore.</p>';
       });
     }
-
-    const categoriesMap = {
-      expense: [
-        '🏠 Contas de Consumo', 
-        '🛃 Moradia', 
-        '🛒 Mercado', 
-        '🍽️ Alimentação', 
-        '📚 Educação', 
-        '🎉 Lazer',
-        '🚗 Carro', 
-        '🏥 Saúde', 
-        '🕊️ Terreiro',
-        '🪞 Estética',
-        '📦 Outros'
-      ],
-      income: ['💰 Salário', '💻 Freelance', '📈 Investimentos', '📦 Outros']
-    };
 
     window.handleTypeChange = function() {
       const type = document.getElementById('type').value;
       const categorySelect = document.getElementById('category');
-      const personContainer = document.getElementById('person-container');
-      const paidContainer = document.getElementById('paid-container');
-      const dateContainer = document.getElementById('date-container');
-      const isPaidCheckbox = document.getElementById('isPaid');
+      const isIncome = type === 'income';
 
-      categorySelect.innerHTML = '';
-      categoriesMap[type].forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        categorySelect.appendChild(option);
-      });
-
-      if (type === 'income') {
-        personContainer.classList.remove('hidden');
-        paidContainer.classList.add('hidden');
-        dateContainer.className = "sm:col-span-3";
-        isPaidCheckbox.checked = true;
-      } else {
-        personContainer.classList.add('hidden');
-        paidContainer.classList.remove('hidden');
-        dateContainer.className = "sm:col-span-3";
-        isPaidCheckbox.checked = false;
-      }
+      categorySelect.innerHTML = categoriesMap[type].map(cat => `<option value="${cat}">${cat}</option>`).join('');
+      document.getElementById('person-container').classList.toggle('hidden', !isIncome);
+      document.getElementById('paid-container').classList.toggle('hidden', isIncome);
+      document.getElementById('isPaid').checked = isIncome;
     };
     window.handleTypeChange();
 
@@ -517,40 +392,23 @@
 
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
-      
-      currentFilteredTransactions = allTransactions.filter(t => {
-        if (!t.dueDate) return false;
-        return t.dueDate.startsWith(selectedMonth);
-      });
-
-      currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      currentFilteredTransactions = allTransactions
+        .filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth))
+        .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
       renderApp(currentFilteredTransactions);
-      renderCharts(currentFilteredTransactions);
-    }
-
-    // Auxiliar para calcular a data do próximo mês mantendo o dia
-    function addMonthsToDate(dateString, monthsToAdd) {
-      const parts = dateString.split('-');
-      const year = parseInt(parts[0], 10);
-      const month = parseInt(parts[1], 10) - 1;
-      const day = parseInt(parts[2], 10);
-
-      const d = new Date(year, month, day);
-      d.setMonth(d.getMonth() + monthsToAdd);
-
-      if (d.getDate() !== day) {
-        d.setDate(0); 
+      if (!document.getElementById('view-chart').classList.contains('hidden')) {
+        renderCharts(currentFilteredTransactions);
       }
-
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-
-      return `${yyyy}-${mm}-${dd}`;
     }
 
-    // Salvar ou Atualizar transação
+    function addMonthsToDate(dateString, monthsToAdd) {
+      const [year, month, day] = dateString.split('-').map(Number);
+      const d = new Date(year, month - 1 + monthsToAdd, day);
+      if (d.getDate() !== day) d.setDate(0);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
     document.getElementById('transaction-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const editingId = document.getElementById('editing-id').value;
@@ -561,64 +419,33 @@
       const person = type === 'income' ? document.getElementById('person').value : 'Nosso Lar';
       const baseDueDate = document.getElementById('dueDate').value;
       const isPaid = type === 'income' ? true : document.getElementById('isPaid').checked;
-
       const isInstallment = document.getElementById('isInstallment').checked;
       const installmentCount = isInstallment ? parseInt(document.getElementById('installmentCount').value, 10) : 1;
 
       try {
         if (editingId) {
-          // Edição simples de 1 registro
-          const docRef = doc(db, 'transactions', editingId);
-          await updateDoc(docRef, {
-            description: rawDescription,
-            amount,
-            type,
-            category,
-            person,
-            dueDate: baseDueDate,
-            isPaid
-          });
-        } else {
-          // Novo Lançamento (Com suporte a parcelamento)
-          if (isInstallment && installmentCount > 1) {
-            const installmentGroupId = `inst_${Date.now()}`; // Identificador único do grupo de parcelas
-
-            for (let i = 0; i < installmentCount; i++) {
-              const installmentDueDate = addMonthsToDate(baseDueDate, i);
-              const descWithParcel = `${rawDescription} (${i + 1}/${installmentCount})`;
-              
-              await addDoc(collection(db, 'transactions'), {
-                description: descWithParcel,
-                amount: amount,
-                type,
-                category,
-                person,
-                dueDate: installmentDueDate,
-                isPaid: i === 0 ? isPaid : (type === 'income'),
-                createdAt: new Date().toISOString(),
-                installmentGroupId: installmentGroupId,
-                rawBaseDescription: rawDescription
-              });
-            }
-          } else {
-            // Lançamento normal sem parcelas
-            await addDoc(collection(db, 'transactions'), {
-              description: rawDescription,
-              amount,
-              type,
-              category,
-              person,
-              dueDate: baseDueDate,
-              isPaid,
-              createdAt: new Date().toISOString()
+          await updateDoc(doc(db, 'transactions', editingId), { description: rawDescription, amount, type, category, person, dueDate: baseDueDate, isPaid });
+        } else if (isInstallment && installmentCount > 1) {
+          const installmentGroupId = `inst_${Date.now()}`;
+          const batch = writeBatch(db);
+          for (let i = 0; i < installmentCount; i++) {
+            const newRef = doc(collection(db, 'transactions'));
+            batch.set(newRef, {
+              description: `${rawDescription} (${i + 1}/${installmentCount})`,
+              amount, type, category, person,
+              dueDate: addMonthsToDate(baseDueDate, i),
+              isPaid: i === 0 ? isPaid : (type === 'income'),
+              createdAt: new Date().toISOString(),
+              installmentGroupId
             });
           }
+          await batch.commit();
+        } else {
+          await addDoc(collection(db, 'transactions'), { description: rawDescription, amount, type, category, person, dueDate: baseDueDate, isPaid, createdAt: new Date().toISOString() });
         }
-
         cancelEdit();
-
       } catch (err) {
-        console.error("Erro ao salvar:", err);
+        console.error(err);
         alert("Erro ao salvar lançamento.");
       }
     });
@@ -631,23 +458,16 @@
       document.getElementById('description').value = t.description;
       document.getElementById('amount').value = t.amount;
       document.getElementById('type').value = t.type;
-      
       handleTypeChange();
-
       document.getElementById('category').value = t.category;
-      if (t.type === 'income' && t.person) {
-        document.getElementById('person').value = t.person;
-      }
+      if (t.type === 'income' && t.person) document.getElementById('person').value = t.person;
       document.getElementById('dueDate').value = t.dueDate;
       document.getElementById('isPaid').checked = !!t.isPaid;
-
-      // Oculta parcelamento na edição para evitar conflitos
       document.getElementById('installment-container').classList.add('hidden');
 
       document.getElementById('form-title').innerHTML = '<span class="text-amber-500">✏️</span> Editar Lançamento';
       document.getElementById('btn-submit').innerText = 'Atualizar Lançamento 🌸';
       document.getElementById('btn-cancel-edit').classList.remove('hidden');
-
       document.getElementById('transaction-form').scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -657,7 +477,6 @@
       document.getElementById('amount').value = '';
       document.getElementById('type').value = 'expense';
       document.getElementById('dueDate').value = new Date().toISOString().split('T')[0];
-      
       document.getElementById('isInstallment').checked = false;
       document.getElementById('installmentCount').value = '2';
       toggleInstallmentOptions();
@@ -666,146 +485,76 @@
       document.getElementById('form-title').innerHTML = '<span class="text-pink-400">✨</span> Novo Lançamento';
       document.getElementById('btn-submit').innerText = 'Lançar Conta 🌸';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
-
       handleTypeChange();
     };
 
     window.togglePaidStatus = async function(id, currentStatus) {
-      try {
-        const docRef = doc(db, 'transactions', id);
-        await updateDoc(docRef, { isPaid: !currentStatus });
-      } catch (err) {
-        console.error("Erro ao atualizar status:", err);
-      }
+      await updateDoc(doc(db, 'transactions', id), { isPaid: !currentStatus });
     };
 
-    // EXCLUSÃO DE LANÇAMENTOS (ÚNICO OU PARCELADO COMPLETO)
     window.deleteTransaction = async function(id) {
       const targetTransaction = allTransactions.find(t => t.id === id);
       if (!targetTransaction) return;
 
-      // Identifica se faz parte de um grupo de parcelas
       const groupId = targetTransaction.installmentGroupId;
-      
-      // Procura parcelas equivalentes por ID de grupo ou por formato de descrição "(X/Y)"
-      let relatedInstallments = [];
-      if (groupId) {
-        relatedInstallments = allTransactions.filter(t => t.installmentGroupId === groupId);
-      } else {
-        const match = targetTransaction.description.match(/^(.*?)\s*\(\d+\/\d+\)$/);
-        if (match) {
-          const baseName = match[1].trim();
-          relatedInstallments = allTransactions.filter(t => {
-            const tMatch = t.description.match(/^(.*?)\s*\(\d+\/\d+\)$/);
-            return tMatch && tMatch[1].trim() === baseName && t.type === targetTransaction.type;
-          });
-        }
-      }
+      let relatedInstallments = groupId ? allTransactions.filter(t => t.installmentGroupId === groupId) : [];
 
-      // Se houver parcelas associadas
       if (relatedInstallments.length > 1) {
-        const deleteAll = confirm(
-          `Este lançamento possui ${relatedInstallments.length} parcelas salvas no sistema.\n\n` +
-          `• Clique em [OK] para excluir TODAS as ${relatedInstallments.length} parcelas deste lançamento.\n` +
-          `• Clique em [Cancelar] para excluir APENAS esta parcela individual.`
-        );
-
-        try {
-          if (deleteAll) {
-            const batch = writeBatch(db);
-            relatedInstallments.forEach(item => {
-              batch.delete(doc(db, 'transactions', item.id));
-            });
-            await batch.commit();
-          } else {
-            const deleteSingle = confirm("Deseja apagar apenas esta parcela individual?");
-            if (deleteSingle) {
-              await deleteDoc(doc(db, 'transactions', id));
-            } else {
-              return;
-            }
-          }
-
-          if (document.getElementById('editing-id').value === id) {
-            cancelEdit();
-          }
-        } catch (err) {
-          console.error("Erro ao excluir parcelas:", err);
-          alert("Erro ao excluir o lançamento parcelado.");
+        if (confirm(`Deseja excluir TODAS as ${relatedInstallments.length} parcelas deste lançamento?`)) {
+          const batch = writeBatch(db);
+          relatedInstallments.forEach(item => batch.delete(doc(db, 'transactions', item.id)));
+          await batch.commit();
+        } else if (confirm("Deseja apagar APENAS esta parcela individual?")) {
+          await deleteDoc(doc(db, 'transactions', id));
         }
-
-      } else {
-        // Exclusão normal de 1 lançamento não parcelado
-        if (confirm("Deseja apagar este lançamento?")) {
-          try {
-            await deleteDoc(doc(db, 'transactions', id));
-            if (document.getElementById('editing-id').value === id) {
-              cancelEdit();
-            }
-          } catch (err) {
-            console.error("Erro ao excluir:", err);
-          }
-        }
+      } else if (confirm("Deseja apagar este lançamento?")) {
+        await deleteDoc(doc(db, 'transactions', id));
       }
+      if (document.getElementById('editing-id').value === id) cancelEdit();
     };
 
     function renderApp(transactions) {
-      const listEl = document.getElementById('transactions-list');
-      
-      let totalIncome = 0;
-      let totalExpensePaid = 0;
-      let totalExpensePending = 0;
+      let totalIncome = 0, totalExpensePaid = 0, totalExpensePending = 0;
 
       transactions.forEach(t => {
-        if (t.type === 'income') {
-          totalIncome += t.amount;
-        } else if (t.type === 'expense') {
-          if (t.isPaid) {
-            totalExpensePaid += t.amount;
-          } else {
-            totalExpensePending += t.amount;
-          }
-        }
+        if (t.type === 'income') totalIncome += t.amount;
+        else if (t.isPaid) totalExpensePaid += t.amount;
+        else totalExpensePending += t.amount;
       });
 
       const balance = totalIncome - totalExpensePaid;
-
       document.getElementById('total-balance').innerText = `R$ ${balance.toFixed(2)}`;
       document.getElementById('total-balance').className = `text-lg sm:text-2xl font-bold mt-1 ${balance >= 0 ? 'text-slate-800' : 'text-rose-500'}`;
       document.getElementById('total-income').innerText = `R$ ${totalIncome.toFixed(2)}`;
       document.getElementById('total-expense').innerText = `R$ ${totalExpensePaid.toFixed(2)}`;
       document.getElementById('total-pending').innerText = `R$ ${totalExpensePending.toFixed(2)}`;
 
-      if (transactions.length === 0) {
+      const listEl = document.getElementById('transactions-list');
+      if (!transactions.length) {
         listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
         return;
       }
 
       listEl.innerHTML = transactions.map(t => {
         const isInc = t.type === 'income';
-        const iconBg = isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100';
-        
-        const categoryIcon = t.category.match(/\p{Extended_Pictographic}/u)?.[0] || (isInc ? '🌸' : '💸');
         const [year, month, day] = t.dueDate.split('-');
-        const formattedDate = `${day}/${month}/${year}`;
-
         return `
           <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl border transition ${t.isPaid ? 'border-pink-50 bg-white/60' : 'border-rose-200 bg-rose-50/20 shadow-xs'} hover:shadow-md gap-3">
             <div class="flex items-center gap-3">
               ${!isInc ? `
-                <button onclick="togglePaidStatus('${t.id}', ${t.isPaid})" class="w-6 h-6 rounded-lg border flex items-center justify-center transition cursor-pointer shrink-0 ${t.isPaid ? 'bg-emerald-400 border-emerald-400 text-white' : 'border-pink-200 bg-white hover:border-pink-400'}" title="Marcar como Pago">
+                <button onclick="togglePaidStatus('${t.id}', ${t.isPaid})" class="w-6 h-6 rounded-lg border flex items-center justify-center transition cursor-pointer shrink-0 ${t.isPaid ? 'bg-emerald-400 border-emerald-400 text-white' : 'border-pink-200 bg-white hover:border-pink-400'}">
                   ${t.isPaid ? '✓' : ''}
                 </button>
               ` : ''}
-              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl border flex items-center justify-center text-base sm:text-lg shrink-0 ${iconBg}">
-                ${categoryIcon}
+              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl border flex items-center justify-center text-base sm:text-lg shrink-0 ${isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100'}">
+                ${t.category.match(/\p{Extended_Pictographic}/u)?.[0] || (isInc ? '🌸' : '💸')}
               </div>
               <div class="min-w-0 flex-1">
                 <p class="font-medium text-slate-800 text-sm truncate ${t.isPaid && t.type === 'expense' ? 'line-through text-slate-400' : ''}">${t.description}</p>
                 <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
                   <span class="text-[10px] bg-pink-50/80 text-pink-600 px-2 py-0.5 rounded-md font-medium border border-pink-100/50">${t.category}</span>
-                  ${t.type === 'income' ? `<span class="text-[11px] text-slate-400">• ${t.person}</span>` : ''}
-                  <span class="text-[11px] ${t.isPaid ? 'text-slate-400' : 'text-rose-500 font-medium'}">• Venc: ${formattedDate}</span>
+                  ${isInc ? `<span class="text-[11px] text-slate-400">• ${t.person}</span>` : ''}
+                  <span class="text-[11px] ${t.isPaid ? 'text-slate-400' : 'text-rose-500 font-medium'}">• Venc: ${day}/${month}/${year}</span>
                 </div>
               </div>
             </div>
@@ -815,12 +564,8 @@
                 ${isInc ? '+' : '-'} R$ ${t.amount.toFixed(2)}
               </span>
               <div class="flex items-center gap-1">
-                <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1.5 cursor-pointer" title="Editar Lançamento">
-                  ✏️
-                </button>
-                <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1.5 cursor-pointer" title="Excluir Lançamento">
-                  🗑️
-                </button>
+                <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1.5 cursor-pointer">✏️</button>
+                <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1.5 cursor-pointer">🗑️</button>
               </div>
             </div>
           </div>
@@ -828,15 +573,14 @@
       }).join('');
     }
 
-    // Renderização dos Gráficos de Pizza
+    // RENDERIZAÇÃO E INTERATIVIDADE DOS GRÁFICOS DE PIZZA
     function renderCharts(transactions) {
+      // 1. Gráfico de Despesas
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
         transactions.forEach(t => {
-          if (t.type === 'expense') {
-            expenseTotals[t.category] = (expenseTotals[t.category] || 0) + t.amount;
-          }
+          if (t.type === 'expense') expenseTotals[t.category] = (expenseTotals[t.category] || 0) + t.amount;
         });
 
         if (expenseChartInstance) expenseChartInstance.destroy();
@@ -852,18 +596,26 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+            onClick: (e, elements) => {
+              if (elements.length > 0) {
+                const index = elements[0].index;
+                const selectedCategory = Object.keys(expenseTotals)[index];
+                showChartCategoryDetails('expense', selectedCategory);
+              }
+            }
           }
         });
       }
 
+      // 2. Gráfico de Receitas
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
         transactions.forEach(t => {
           if (t.type === 'income') {
-            const personKey = t.person || 'Ambos';
-            incomeTotals[personKey] = (incomeTotals[personKey] || 0) + t.amount;
+            const p = t.person || 'Ambos';
+            incomeTotals[p] = (incomeTotals[p] || 0) + t.amount;
           }
         });
 
@@ -880,10 +632,55 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+            onClick: (e, elements) => {
+              if (elements.length > 0) {
+                const index = elements[0].index;
+                const selectedPerson = Object.keys(incomeTotals)[index];
+                showChartCategoryDetails('income', selectedPerson);
+              }
+            }
           }
         });
       }
+    }
+
+    // EXIBIR LANÇAMENTOS DO ITEM CLICADO NO GRÁFICO
+    function showChartCategoryDetails(type, filterKey) {
+      const container = document.getElementById('chart-details-container');
+      const title = document.getElementById('chart-details-title');
+      const list = document.getElementById('chart-details-list');
+
+      let filteredItems = [];
+      if (type === 'expense') {
+        title.innerHTML = `<span>🌷</span> Lançamentos da Categoria: <strong>${filterKey}</strong>`;
+        filteredItems = currentFilteredTransactions.filter(t => t.type === 'expense' && t.category === filterKey);
+      } else {
+        title.innerHTML = `<span>🌱</span> Receitas de: <strong>${filterKey}</strong>`;
+        filteredItems = currentFilteredTransactions.filter(t => t.type === 'income' && (t.person || 'Ambos') === filterKey);
+      }
+
+      if (!filteredItems.length) {
+        list.innerHTML = `<p class="text-xs text-slate-400">Nenhum lançamento encontrado para ${filterKey}.</p>`;
+      } else {
+        list.innerHTML = filteredItems.map(t => {
+          const [year, month, day] = t.dueDate.split('-');
+          return `
+            <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-pink-100 text-xs">
+              <div>
+                <span class="font-semibold text-slate-700">${t.description}</span>
+                <span class="text-slate-400 ml-2">(${day}/${month}/${year})</span>
+              </div>
+              <span class="font-bold ${t.type === 'income' ? 'text-emerald-500' : 'text-slate-700'}">
+                R$ ${t.amount.toFixed(2)}
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      container.classList.remove('hidden');
+      container.scrollIntoView({ behavior: 'smooth' });
     }
   </script>
 </body>
