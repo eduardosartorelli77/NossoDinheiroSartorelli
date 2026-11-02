@@ -267,7 +267,7 @@
               type="text" 
               id="search-description" 
               placeholder="🔍 Buscar descrição..." 
-              oninput="filterAndRenderApp()"
+              oninput="applySearchFilter()"
               class="w-full px-4 py-2 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-xs text-slate-700"
             />
           </div>
@@ -334,7 +334,8 @@
     let unsubscribeFirestore = null;
     let expenseChartInstance = null;
     let incomeChartInstance = null;
-    let currentFilteredTransactions = [];
+    let allTransactions = [];
+    let currentMonthTransactions = [];
 
     // Função de Backup Local (Exportar JSON)
     window.exportBackup = function() {
@@ -369,7 +370,7 @@
         viewChart.classList.remove('hidden');
         btnTabChart.className = "bg-pink-100 p-2.5 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
         btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
-        renderCharts(currentFilteredTransactions);
+        renderCharts(currentMonthTransactions);
       }
     };
 
@@ -474,26 +475,38 @@
     };
     window.handleTypeChange();
 
-    let allTransactions = [];
-
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
 
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
-      const searchTerm = document.getElementById('search-description').value.toLowerCase().trim();
       
-      currentFilteredTransactions = allTransactions.filter(t => {
+      // Filtra estritamente os lançamentos do mês selecionado
+      currentMonthTransactions = allTransactions.filter(t => {
         if (!t.dueDate) return false;
-        const matchesMonth = t.dueDate.startsWith(selectedMonth);
-        const matchesSearch = searchTerm === '' || (t.description && t.description.toLowerCase().includes(searchTerm));
-        return matchesMonth && matchesSearch;
+        return t.dueDate.startsWith(selectedMonth);
       });
 
-      currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      currentMonthTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
-      renderApp(currentFilteredTransactions);
-      renderCharts(currentFilteredTransactions);
+      // Atualiza os cards de resumo e gráficos com base no mês completo
+      updateSummaryCards(currentMonthTransactions);
+      renderCharts(currentMonthTransactions);
+
+      // Aplica o filtro de busca localmente na lista
+      applySearchFilter();
     }
+
+    // Função separada para filtrar a lista na tela de acordo com a busca por descrição
+    window.applySearchFilter = function() {
+      const searchTerm = document.getElementById('search-description').value.toLowerCase().trim();
+      
+      const filteredList = currentMonthTransactions.filter(t => {
+        if (!searchTerm) return true;
+        return t.description && t.description.toLowerCase().includes(searchTerm);
+      });
+
+      renderTransactionsList(filteredList);
+    };
 
     // Salvar ou Atualizar transação
     document.getElementById('transaction-form').addEventListener('submit', async (e) => {
@@ -601,18 +614,12 @@
       }
     };
 
-    function renderApp(transactions) {
-      const listEl = document.getElementById('transactions-list');
-      
+    function updateSummaryCards(transactions) {
       let totalIncome = 0;
       let totalExpensePaid = 0;
       let totalExpensePending = 0;
 
-      // Os totais do topo continuam calculando com base em TODO o mês selecionado
-      const selectedMonth = document.getElementById('filter-month').value;
-      const monthTransactions = allTransactions.filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth));
-
-      monthTransactions.forEach(t => {
+      transactions.forEach(t => {
         if (t.type === 'income') {
           totalIncome += t.amount;
         } else if (t.type === 'expense') {
@@ -631,9 +638,13 @@
       document.getElementById('total-income').innerText = `R$ ${totalIncome.toFixed(2)}`;
       document.getElementById('total-expense').innerText = `R$ ${totalExpensePaid.toFixed(2)}`;
       document.getElementById('total-pending').innerText = `R$ ${totalExpensePending.toFixed(2)}`;
+    }
+
+    function renderTransactionsList(transactions) {
+      const listEl = document.getElementById('transactions-list');
 
       if (transactions.length === 0) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para esta busca. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado. 🌸</p>';
         return;
       }
 
@@ -683,14 +694,11 @@
 
     // Renderização dos Gráficos de Pizza
     function renderCharts(transactions) {
-      const selectedMonth = document.getElementById('filter-month').value;
-      const monthTransactions = allTransactions.filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth));
-
       // 1. Gráfico de Despesas (TODAS as despesas do mês)
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
-        monthTransactions.forEach(t => {
+        transactions.forEach(t => {
           if (t.type === 'expense') {
             expenseTotals[t.category] = (expenseTotals[t.category] || 0) + t.amount;
           }
@@ -718,7 +726,7 @@
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
-        monthTransactions.forEach(t => {
+        transactions.forEach(t => {
           if (t.type === 'income') {
             const personKey = t.person || 'Ambos';
             incomeTotals[personKey] = (incomeTotals[personKey] || 0) + t.amount;
