@@ -82,7 +82,8 @@
           <button 
             id="btn-tab-list" 
             onclick="switchTab('list')"
-            class="bg-gray-50 hover:bg-gray-100 text-gray-600 p-2 rounded-2xl text-sm font-semibold border border-gray-200 transition cursor-pointer flex items-center justify-center"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-600 p-2 rounded-2xl text-sm font-semibold border border-gray-400 transition cursor-pointer flex items-center justify-center"
+			title="Lançamentos"
           >
             📋 
           </button>
@@ -235,14 +236,22 @@
             <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
           </div>
 
-          <!-- CAMPO DE BUSCA EM TEMPO REAL -->
-          <div class="relative w-full sm:w-64">
+          <!-- CAMPO DE BUSCA EM TEMPO REAL COM BOTÃO DE LIMPAR -->
+          <div class="relative w-full sm:w-64 flex items-center">
             <input 
               type="text" 
               id="search-input" 
               placeholder="🔍 Buscar Lançamento..." 
-              class="w-full px-3.5 py-1 rounded-2xl border border-blue-100 bg-blue-50/20 focus:outline-none focus:ring-2 focus:ring-blue-300 text-xs sm:text-sm text-slate-700 placeholder-slate-400"
+              class="w-full pl-3.5 pr-8 py-1 rounded-2xl border border-blue-100 bg-blue-50/20 focus:outline-none focus:ring-2 focus:ring-blue-300 text-xs sm:text-sm text-slate-700 placeholder-slate-400"
             />
+            <button 
+              id="btn-clear-search" 
+              onclick="clearSearch()" 
+              class="hidden absolute right-2.5 text-slate-400 hover:text-slate-600 text-xs font-bold w-4 h-4 rounded-full bg-slate-200/60 hover:bg-slate-300/80 flex items-center justify-center transition cursor-pointer"
+              title="Limpar busca"
+            >
+              ✕
+            </button>
           </div>
         </div>
 
@@ -403,13 +412,26 @@
       categorySelect.innerHTML = categoriesMap[type].map(cat => `<option value="${cat}">${cat}</option>`).join('');
       document.getElementById('person-container').classList.toggle('hidden', !isIncome);
       document.getElementById('paid-container').classList.remove('hidden');
-      // Por padrão, não marcar "Pago" ao trocar o tipo ou abrir novo lançamento
       document.getElementById('isPaid').checked = false;
     };
     window.handleTypeChange();
 
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
-    document.getElementById('search-input').addEventListener('input', filterAndRenderApp);
+    
+    // Controle do campo de busca e botão "x" dinâmico
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const btnClear = document.getElementById('btn-clear-search');
+      btnClear.classList.toggle('hidden', e.target.value.trim() === '');
+      filterAndRenderApp();
+    });
+
+    window.clearSearch = function() {
+      const searchInput = document.getElementById('search-input');
+      searchInput.value = '';
+      document.getElementById('btn-clear-search').classList.add('hidden');
+      filterAndRenderApp();
+      searchInput.focus();
+    };
 
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
@@ -455,13 +477,11 @@
         if (editingId) {
           const targetT = allTransactions.find(item => item.id === editingId);
           if (targetT && targetT.installmentGroupId) {
-            // Se for um item parcelado, pergunta se deseja atualizar apenas esta parcela ou todo o grupo / parcelas futuras
             const groupItems = allTransactions.filter(item => item.installmentGroupId === targetT.installmentGroupId).sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
             const choice = confirm("Este é um lançamento parcelado.\n\nDeseja atualizar TODO O GRUPO de parcelas com os novos dados (valor, vencimento, quantidade)?\n\n(Clique em [OK] para atualizar o grupo ou [Cancelar] para atualizar apenas esta parcela individual).");
             
             if (choice) {
               const batch = writeBatch(db);
-              // Deleta todas as parcelas antigas do grupo e recria com os novos parâmetros a partir da data informada
               groupItems.forEach(item => batch.delete(doc(db, 'transactions', item.id)));
               
               const newGroupId = `inst_${Date.now()}`;
@@ -513,7 +533,6 @@
       if (!t) return;
 
       document.getElementById('editing-id').value = t.id;
-      // Remove o sufixo de parcela (ex: " (1/12)") da descrição para facilitar a edição limpa
       const cleanDesc = t.description ? t.description.replace(/\s*\(\d+\/\d+\)\s*$/, '').trim() : '';
       document.getElementById('description').value = cleanDesc || t.description;
       document.getElementById('amount').value = t.amount;
@@ -524,7 +543,6 @@
       document.getElementById('dueDate').value = t.dueDate;
       document.getElementById('isPaid').checked = !!t.isPaid;
 
-      // Se for parcelado, permite reajustar o parcelamento na edição
       const groupItems = t.installmentGroupId ? allTransactions.filter(item => item.installmentGroupId === t.installmentGroupId) : [];
       if (groupItems.length > 0) {
         document.getElementById('isInstallment').checked = true;
@@ -548,7 +566,7 @@
       document.getElementById('amount').value = '';
       document.getElementById('type').value = 'expense';
       document.getElementById('dueDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('isPaid').checked = false; // Garantir desmarcado
+      document.getElementById('isPaid').checked = false;
       document.getElementById('isInstallment').checked = false;
       document.getElementById('installmentCount').value = '2';
       toggleInstallmentOptions();
@@ -558,7 +576,7 @@
       document.getElementById('btn-submit').innerText = 'Lançar Conta 🌸';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
       handleTypeChange();
-      document.getElementById('isPaid').checked = false; // Garantir após handleTypeChange
+      document.getElementById('isPaid').checked = false;
     };
 
     window.payOffInstallments = async function(id) {
@@ -573,7 +591,6 @@
           t => t.installmentGroupId === groupId && !t.isPaid
         );
       } else {
-        // Fallback para parcelados antigos sem groupId (agrupados por descrição base e tipo/valor similar)
         const baseDesc = targetTransaction.description.replace(/\s*\(\d+\/\d+\)\s*$/, '').trim();
         pendingInstallments = allTransactions.filter(t => {
           const tBaseDesc = t.description ? t.description.replace(/\s*\(\d+\/\d+\)\s*$/, '').trim() : '';
@@ -592,7 +609,6 @@
       if (confirm(`Deseja marcar como ${term} todas as ${pendingInstallments.length} parcelas futuras restantes deste lançamento?`)) {
         const batch = writeBatch(db);
         pendingInstallments.forEach(item => {
-          // Se não tiver installmentGroupId, podemos aproveitar para injetar ou só atualizar isPaid
           batch.update(doc(db, 'transactions', item.id), { isPaid: true });
         });
         await batch.commit();
@@ -687,9 +703,7 @@
       }).join('');
     }
 
-    // RENDERIZAÇÃO E INTERATIVIDADE DOS GRÁFICOS DE PIZZA
     function renderCharts(transactions) {
-      // 1. Gráfico de Despesas
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
@@ -722,7 +736,6 @@
         });
       }
 
-      // 2. Gráfico de Receitas
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
@@ -759,7 +772,6 @@
       }
     }
 
-    // EXIBIR LANÇAMENTOS DO ITEM CLICADO NO GRÁFICO
     function showChartCategoryDetails(type, filterKey) {
       const container = document.getElementById('chart-details-container');
       const title = document.getElementById('chart-details-title');
