@@ -373,20 +373,21 @@
       });
     }
 
-    // Categorias Solicitadas
+    // Categorias com Ícones Atualizadas
     const categoriesMap = {
       expense: [
-        'Contas de Consumo', 
-        'Moradia', 
-        'Mercado', 
-        'Alimentação', 
-        'Educação', 
-        'Lazer',
-        'Carro', 
-        'Saúde', 
-        'Outros'
+        '⚡ Contas de Consumo', 
+        '🏠 Moradia', 
+        '🛒 Mercado', 
+        '🍽️ Alimentação', 
+        '📚 Educação', 
+        '🎉 Lazer',
+        '🚗 Carro', 
+        '🏥 Saúde', 
+        '🕊️ Terreiro',
+        '📦 Outros'
       ],
-      income: ['Salário', 'Freelance', 'Investimentos', 'Outros']
+      income: ['💰 Salário', '💻 Freelance', '📈 Investimentos', '📦 Outros']
     };
 
     window.handleTypeChange = function() {
@@ -554,17 +555,14 @@
         if (t.type === 'income') {
           totalIncome += t.amount;
         } else if (t.type === 'expense') {
-          // Contabiliza somente despesas PAGAS no total de despesas
           if (t.isPaid) {
             totalExpensePaid += t.amount;
           } else {
-            // Contabiliza despesas PENDENTES
             totalExpensePending += t.amount;
           }
         }
       });
 
-      // Saldo considerando receitas menos as despesas efetivamente pagas
       const balance = totalIncome - totalExpensePaid;
 
       document.getElementById('total-balance').innerText = `R$ ${balance.toFixed(2)}`;
@@ -582,6 +580,9 @@
         const isInc = t.type === 'income';
         const iconBg = isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100';
         
+        // Extrai o primeiro emoji/ícone da string da categoria se existir
+        const categoryIcon = t.category.match(/\p{Extended_Pictographic}/u)?.[0] || (isInc ? '🌸' : '💸');
+
         const [year, month, day] = t.dueDate.split('-');
         const formattedDate = `${day}/${month}/${year}`;
 
@@ -594,7 +595,7 @@
                 </button>
               ` : ''}
               <div class="w-10 h-10 rounded-2xl border flex items-center justify-center text-lg ${iconBg}">
-                ${isInc ? '🌸' : '💸'}
+                ${categoryIcon}
               </div>
               <div>
                 <p class="font-medium text-slate-800 text-sm ${t.isPaid && t.type === 'expense' ? 'line-through text-slate-400' : ''}">${t.description}</p>
@@ -653,7 +654,8 @@
             data: data,
             backgroundColor: [
               '#F472B6', '#FB7185', '#38BDF8', '#4ADE80', 
-              '#FBBF24', '#A78BFA', '#F43F5E', '#10B981', '#94A3B8'
+              '#FBBF24', '#A78BFA', '#F43F5E', '#10B981', 
+              '#6366F1', '#94A3B8'
             ]
           }]
         },
