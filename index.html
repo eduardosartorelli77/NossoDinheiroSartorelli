@@ -71,7 +71,10 @@
           <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
             <span class="text-pink-400">💖</span> Família Sartorelli
           </h1>
-          <p class="text-xs text-pink-400 mt-0.5 font-medium">Planejamento para Nova Casa</p>
+          <!-- TEXTO COM EFEITO AZUL (SEMELHANTE AOS BOTÕES DO CABEÇALHO) -->
+          <span class="inline-flex items-center gap-1.5 mt-1.5 bg-sky-50 text-sky-600 px-3 py-1 rounded-2xl text-xs font-semibold border border-sky-200 transition shadow-xs">
+            🏡 Planejamento para Nova Casa
+          </span>
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
@@ -225,10 +228,23 @@
 
       <!-- Lista de Transações -->
       <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-base sm:text-lg font-semibold text-slate-800">Contas do Mês</h2>
-          <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div class="flex items-center gap-2">
+            <h2 class="text-base sm:text-lg font-semibold text-slate-800">Contas do Mês</h2>
+            <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
+          </div>
+          <!-- CAMPO DE BUSCA EM TEMPO REAL -->
+          <div class="relative w-full sm:w-64">
+            <input 
+              type="text" 
+              id="search-input" 
+              oninput="filterAndRenderApp()" 
+              placeholder="🔍 Buscar lançamento..." 
+              class="w-full pl-3.5 pr-8 py-2 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-xs text-slate-700"
+            />
+          </div>
         </div>
+
         <div id="transactions-list" class="space-y-3">
           <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
         </div>
@@ -391,10 +407,18 @@
 
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
 
-    function filterAndRenderApp() {
+    window.filterAndRenderApp = function() {
       const selectedMonth = document.getElementById('filter-month').value;
+      const searchText = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+
       currentFilteredTransactions = allTransactions
         .filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth))
+        .filter(t => {
+          if (!searchText) return true;
+          const matchDesc = t.description && t.description.toLowerCase().includes(searchText);
+          const matchCat = t.category && t.category.toLowerCase().includes(searchText);
+          return matchDesc || matchCat;
+        })
         .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
       renderApp(currentFilteredTransactions);
@@ -532,7 +556,7 @@
 
       const listEl = document.getElementById('transactions-list');
       if (!transactions.length) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para este filtro. 🌸</p>';
         return;
       }
 
