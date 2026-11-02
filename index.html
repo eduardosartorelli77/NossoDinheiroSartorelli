@@ -64,26 +64,26 @@
   <!-- ==================== PAINEL FINANCEIRO (PROTEGIDO) ==================== -->
   <div class="max-w-4xl mx-auto space-y-4 sm:space-y-8 hidden" id="app">
     
-    <!-- Cabeçalho -->
-    <header class="bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
+    <!-- Cabeçalho (Com relative z-50 para garantir sobreposição) -->
+    <header class="relative z-50 bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
-     <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
-      <span class="text-pink-400">💖</span>
-      Família Sartorelli
-    </h1>
+          <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <span class="text-pink-400">💖</span>
+            Família Sartorelli
+          </h1>
 
-    <span class="ml-8 mt-1 w-fit text-[10px] sm:text-xs text-blue-800 font-medium bg-blue-50 px-2 py-1 rounded-full border border-blue-100">
-      Planejamento para Nova Casa 🏠
-    </span>
-          </div>
+          <span class="ml-8 mt-1 w-fit text-[10px] sm:text-xs text-blue-800 font-medium bg-blue-50 px-2 py-1 rounded-full border border-blue-100">
+            Planejamento para Nova Casa 🏠
+          </span>
+        </div>
 
         <div class="flex items-center gap-2 flex-wrap">
           <button 
             id="btn-tab-list" 
             onclick="switchTab('list')"
             class="bg-gray-300 hover:bg-gray-400 text-gray-600 p-2 rounded-2xl text-sm font-semibold border border-gray-400 transition cursor-pointer flex items-center justify-center"
-			title="Lançamentos"
+            title="Lançamentos"
           >
             📋 
           </button>
@@ -97,15 +97,38 @@
             📊
           </button>
 
-          <button 
-            onclick="exportBackup()" 
-            class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 p-2 rounded-2xl text-sm font-semibold border border-emerald-200 transition cursor-pointer flex items-center justify-center"
-            title="Fazer Backup Local"
-          >
-            💾
-          </button>
+          <!-- DROPDOWN DE EXPORTAÇÃO -->
+          <div class="relative inline-block text-left">
+            <button 
+              id="btn-export-menu"
+              onclick="toggleExportMenu(event)" 
+              class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 p-2 rounded-2xl text-sm font-semibold border border-emerald-200 transition cursor-pointer flex items-center justify-center"
+              title="Exportar Lançamentos"
+            >
+              💾
+            </button>
 
-          <div class="flex items-center gap-1.5 bg-gradient-to-r from-purple-100 to-purple-50 px-3 py-1.5 rounded-2xl border border-purple-100/80 shadow-xs hover:border-purple-500 hover:bg-purple-100 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
+            <!-- Menu Opções de Exportação (z-[9999]) -->
+            <div 
+              id="export-dropdown" 
+              class="hidden absolute right-0 mt-2 w-48 rounded-2xl bg-white shadow-lg border border-pink-100 py-1.5 z-[9999] text-xs text-slate-700 backdrop-blur-md"
+            >
+              <button 
+                onclick="exportBackupCSV(); toggleExportMenu();" 
+                class="w-full text-left px-4 py-2 hover:bg-pink-50/80 transition flex items-center gap-2 font-medium cursor-pointer"
+              >
+                📊<strong>CSV (Excel)</strong>
+              </button>
+              <button 
+                onclick="exportBackupJSON(); toggleExportMenu();" 
+                class="w-full text-left px-4 py-2 hover:bg-pink-50/80 transition flex items-center gap-2 font-medium cursor-pointer border-t border-pink-50"
+              >
+                📄<strong>JSON</strong>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 bg-gradient-to-r from-purple-50 to-purple-50 px-3 py-1.5 rounded-2xl border border-purple-100/80 shadow-xs hover:border-purple-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
             <span class="text-xs">📅</span>
             <label for="filter-month" class="text-[10px] sm:text-xs font-semibold text-purple-600 uppercase tracking-wider cursor-pointer">MÊS:</label>
             <input 
@@ -118,9 +141,9 @@
 
           <button 
             id="btn-logout" 
-            class="flex items-center justify-center bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 p-2 rounded-2xl text-sm font-medium border border-rose-200 transition cursor-pointer ml-auto sm:ml-0"
+            class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-1.5 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer ml-auto sm:ml-0"
           >
-            <span>🚪</span>Sair
+            <span>🚪</span> Sair
           </button>
         </div>
       </div>
@@ -335,7 +358,61 @@
       income: ['💰 Salário' ]
     };
 
-    window.exportBackup = function() {
+    // CONTROLE DO MENU DROPDOWN DE EXPORTAÇÃO
+    window.toggleExportMenu = function(e) {
+      if (e) e.stopPropagation();
+      const dropdown = document.getElementById('export-dropdown');
+      dropdown.classList.toggle('hidden');
+    };
+
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('export-dropdown');
+      const btn = document.getElementById('btn-export-menu');
+      if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !btn.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    // 1. EXPORTAÇÃO EM CSV (EXCEL)
+    window.exportBackupCSV = function() {
+      if (!allTransactions.length) return alert("Não há dados para exportar.");
+
+      const headers = ["ID", "Descrição", "Valor (R$)", "Tipo", "Categoria", "Pessoa / Destino", "Data Vencimento", "Status Pago", "Grupo Parcelamento", "Data Criação"];
+      
+      const rows = allTransactions.map(t => {
+        const typeLabel = t.type === 'income' ? 'Receita' : 'Despesa';
+        const paidLabel = t.isPaid ? 'Pago' : 'Pendente';
+        const formattedAmount = typeof t.amount === 'number' ? t.amount.toFixed(2).replace('.', ',') : '0,00';
+        
+        return [
+          t.id || '',
+          t.description || '',
+          formattedAmount,
+          typeLabel,
+          t.category || '',
+          t.person || 'Nosso Lar',
+          t.dueDate || '',
+          paidLabel,
+          t.installmentGroupId || '',
+          t.createdAt || ''
+        ].map(val => `"${String(val).replace(/"/g, '""')}"`);
+      });
+
+      const csvContent = '\uFEFF' + [headers.map(h => `"${h}"`).join(';'), ...rows.map(r => r.join(';'))].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `backup_familia_sartorelli_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      a.remove();
+    };
+
+    // 2. EXPORTAÇÃO EM JSON
+    window.exportBackupJSON = function() {
       if (!allTransactions.length) return alert("Não há dados para exportar.");
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allTransactions, null, 2));
       const a = document.createElement('a');
