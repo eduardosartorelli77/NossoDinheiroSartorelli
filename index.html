@@ -676,7 +676,7 @@
               </span>
               <div class="flex items-center gap-1">
                 ${(t.installmentGroupId || /\(\d+\/\d+\)/.test(t.description)) && !t.isPaid ? `
-                  <button onclick="payOffInstallments('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition p-1.5 cursor-pointer" title="Antecipar quitação de parcelas restantes">⚡</button>
+                  <button onclick="payOffInstallments('${t.id}')" class="text-slate-400 hover:text-emerald-500 transition p-1.5 cursor-pointer" title="Antecipar quitação de parcelas restantes">🎉</button>
                 ` : ''}
                 <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1.5 cursor-pointer" title="Editar">✏️</button>
                 <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1.5 cursor-pointer" title="Excluir">🗑️</button>
