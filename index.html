@@ -73,7 +73,7 @@
         </h1>
         <p class="text-xs text-pink-400 mt-1 font-medium" id="status-conexao">Sincronizado ✨</p>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 flex-wrap">
         <!-- Navegação de Menus/Abas -->
         <button 
           id="btn-tab-list" 
@@ -87,7 +87,16 @@
           onclick="switchTab('chart')"
           class="bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer"
         >
-          📊 Gráfico
+          📊 Gráficos
+        </button>
+
+        <!-- Botão de Backup Local -->
+        <button 
+          onclick="exportBackup()" 
+          class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-3 py-2 rounded-2xl text-xs font-semibold border border-emerald-200 transition cursor-pointer flex items-center gap-1"
+          title="Fazer Backup Local dos Dados"
+        >
+          💾 Backup
         </button>
 
         <!-- Filtro por Mês -->
@@ -103,7 +112,7 @@
         </div>
         <button 
           id="btn-logout" 
-          class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-4 py-2.5 rounded-2xl text-sm font-medium border border-rose-200/50 transition cursor-pointer"
+          class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-2 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer"
         >
           <span>🚪</span> Sair
         </button>
@@ -256,13 +265,28 @@
       </div>
     </div>
 
-    <!-- SEÇÃO 2: GRÁFICO PIZZA -->
-    <div id="view-chart" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden">
-      <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-        <span class="text-pink-400">📊</span> Gráficos de Gastos do Mês
+    <!-- SEÇÃO 2: GRÁFICOS (DESPESAS E RECEITAS) -->
+    <div id="view-chart" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden space-y-6">
+      <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+        <span class="text-pink-400">📊</span> Gráficos de Gastos e Receitas do Mês
       </h2>
-      <div class="max-w-md mx-auto py-4">
-        <canvas id="expenseChart" class="w-full max-h-[350px]"></canvas>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <!-- Gráfico de Despesas -->
+        <div class="bg-rose-50/30 p-4 rounded-2xl border border-rose-100 flex flex-col items-center">
+          <h3 class="text-sm font-bold text-rose-500 mb-2">🌷 Despesas Pagas por Categoria</h3>
+          <div class="w-full max-w-[300px]">
+            <canvas id="expenseChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico de Receitas -->
+        <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center">
+          <h3 class="text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Categoria</h3>
+          <div class="w-full max-w-[300px]">
+            <canvas id="incomeChart"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -294,8 +318,25 @@
     const loginError = document.getElementById('login-error');
 
     let unsubscribeFirestore = null;
-    let pieChartInstance = null;
+    let expenseChartInstance = null;
+    let incomeChartInstance = null;
     let currentFilteredTransactions = [];
+
+    // Função de Backup Local (Exportar JSON)
+    window.exportBackup = function() {
+      if (!allTransactions || allTransactions.length === 0) {
+        alert("Não há dados para exportar.");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allTransactions, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      const dateStr = new Date().toISOString().split('T')[0];
+      downloadAnchor.setAttribute("download", `backup_familia_sartorelli_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    };
 
     // Alternar entre abas
     window.switchTab = function(tabName) {
@@ -314,7 +355,7 @@
         viewChart.classList.remove('hidden');
         btnTabChart.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
         btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
-        renderChart(currentFilteredTransactions);
+        renderCharts(currentFilteredTransactions);
       }
     };
 
@@ -373,7 +414,6 @@
       });
     }
 
-    // Categorias com Ícones Atualizadas
     const categoriesMap = {
       expense: [
         '⚡ Contas de Consumo', 
@@ -435,7 +475,7 @@
       currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
       renderApp(currentFilteredTransactions);
-      renderChart(currentFilteredTransactions);
+      renderCharts(currentFilteredTransactions);
     }
 
     // Salvar ou Atualizar transação
@@ -580,9 +620,7 @@
         const isInc = t.type === 'income';
         const iconBg = isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100';
         
-        // Extrai o primeiro emoji/ícone da string da categoria se existir
         const categoryIcon = t.category.match(/\p{Extended_Pictographic}/u)?.[0] || (isInc ? '🌸' : '💸');
-
         const [year, month, day] = t.dueDate.split('-');
         const formattedDate = `${day}/${month}/${year}`;
 
@@ -622,52 +660,63 @@
       }).join('');
     }
 
-    // Renderização do Gráfico em Pizza (Somente Despesas Pagas)
-    function renderChart(transactions) {
-      const ctx = document.getElementById('expenseChart');
-      if (!ctx) return;
-
-      const categoryTotals = {};
-      
-      transactions.forEach(t => {
-        if (t.type === 'expense' && t.isPaid) {
-          categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
-        }
-      });
-
-      const labels = Object.keys(categoryTotals);
-      const data = Object.values(categoryTotals);
-
-      if (pieChartInstance) {
-        pieChartInstance.destroy();
-      }
-
-      if (labels.length === 0) {
-        return;
-      }
-
-      pieChartInstance = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: data,
-            backgroundColor: [
-              '#F472B6', '#FB7185', '#38BDF8', '#4ADE80', 
-              '#FBBF24', '#A78BFA', '#F43F5E', '#10B981', 
-              '#6366F1', '#94A3B8'
-            ]
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'bottom'
-            }
+    // Renderização dos Gráficos de Pizza (Despesas Pagas e Receitas)
+    function renderCharts(transactions) {
+      // 1. Gráfico de Despesas
+      const ctxExpense = document.getElementById('expenseChart');
+      if (ctxExpense) {
+        const expenseTotals = {};
+        transactions.forEach(t => {
+          if (t.type === 'expense' && t.isPaid) {
+            expenseTotals[t.category] = (expenseTotals[t.category] || 0) + t.amount;
           }
-        }
-      });
+        });
+
+        if (expenseChartInstance) expenseChartInstance.destroy();
+
+        expenseChartInstance = new Chart(ctxExpense, {
+          type: 'pie',
+          data: {
+            labels: Object.keys(expenseTotals),
+            datasets: [{
+              data: Object.values(expenseTotals),
+              backgroundColor: ['#F472B6', '#FB7185', '#38BDF8', '#4ADE80', '#FBBF24', '#A78BFA', '#F43F5E', '#10B981', '#6366F1', '#94A3B8']
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+          }
+        });
+      }
+
+      // 2. Gráfico de Receitas
+      const ctxIncome = document.getElementById('incomeChart');
+      if (ctxIncome) {
+        const incomeTotals = {};
+        transactions.forEach(t => {
+          if (t.type === 'income') {
+            incomeTotals[t.category] = (incomeTotals[t.category] || 0) + t.amount;
+          }
+        });
+
+        if (incomeChartInstance) incomeChartInstance.destroy();
+
+        incomeChartInstance = new Chart(ctxIncome, {
+          type: 'pie',
+          data: {
+            labels: Object.keys(incomeTotals),
+            datasets: [{
+              data: Object.values(incomeTotals),
+              backgroundColor: ['#4ADE80', '#34D399', '#38BDF8', '#818CF8', '#F472B6', '#FBBF24']
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+          }
+        });
+      }
     }
   </script>
 </body>
