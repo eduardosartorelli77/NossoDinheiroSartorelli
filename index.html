@@ -65,30 +65,23 @@
   <!-- ==================== PAINEL FINANCEIRO (PROTEGIDO) ==================== -->
   <div class="max-w-4xl mx-auto space-y-4 sm:space-y-8 hidden" id="app">
     
-    <!-- Cabeçalho -->
-    <header class="flex flex-col gap-4 bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
-      <div class="flex justify-between items-center">
+    <!-- Cabeçalho Reformulado -->
+    <header class="bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <!-- Título e Subtítulo -->
         <div>
           <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
             <span class="text-pink-400">💖</span> Família Sartorelli
           </h1>
-          <p class="text-[11px] sm:text-xs text-pink-400 mt-0.5 font-medium" id="status-conexao">Sincronizado ✨</p>
+          <p class="text-xs text-pink-400 mt-0.5 font-medium" id="status-conexao">Planejamento para Nova Casa</p>
         </div>
-        <button 
-          id="btn-logout" 
-          class="flex items-center gap-1 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-1.5 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer"
-        >
-          <span>🚪</span> Sair
-        </button>
-      </div>
 
-      <div class="flex items-center gap-2 flex-wrap justify-between pt-2 border-t border-pink-50">
-        <!-- Navegação de Menus/Abas -->
-        <div class="flex items-center gap-2">
+        <!-- Ações do Topo (Abas, Filtro e Sair) -->
+        <div class="flex items-center gap-2 flex-wrap">
           <button 
             id="btn-tab-list" 
             onclick="switchTab('list')"
-            class="bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer"
+            class="bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer flex items-center gap-1.5"
           >
             📋 Lançamentos
           </button>
@@ -109,18 +102,26 @@
           >
             💾
           </button>
-        </div>
 
-        <!-- Filtro por Mês -->
-        <div class="flex items-center gap-1.5 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-1.5 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
-          <span class="text-xs">📅</span>
-          <label for="filter-month" class="text-[10px] sm:text-xs font-semibold text-pink-600 uppercase tracking-wider cursor-pointer">Mês:</label>
-          <input 
-            type="month" 
-            id="filter-month" 
-            onclick="this.showPicker()"
-            class="bg-transparent text-xs sm:text-sm font-medium text-slate-700 focus:outline-none cursor-pointer max-w-[125px]"
+          <!-- Filtro por Mês -->
+          <div class="flex items-center gap-1.5 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-1.5 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
+            <span class="text-xs">📅</span>
+            <label for="filter-month" class="text-[10px] sm:text-xs font-semibold text-pink-600 uppercase tracking-wider cursor-pointer">MÊS:</label>
+            <input 
+              type="month" 
+              id="filter-month" 
+              onclick="this.showPicker()"
+              class="bg-transparent text-xs sm:text-sm font-medium text-slate-700 focus:outline-none cursor-pointer max-w-[130px]"
+            >
+          </div>
+
+          <!-- Botão Sair -->
+          <button 
+            id="btn-logout" 
+            class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-1.5 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer ml-auto sm:ml-0"
           >
+            <span>🚪</span> Sair
+          </button>
         </div>
       </div>
     </header>
@@ -239,7 +240,7 @@
             </div>
           </div>
 
-          <!-- OPÇÕES DE PARCELAMENTO (NOVO) -->
+          <!-- OPÇÕES DE PARCELAMENTO -->
           <div id="installment-container" class="sm:col-span-6 bg-purple-50/40 p-3.5 rounded-2xl border border-purple-100 mt-1">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
               <div class="flex items-center gap-2">
@@ -278,7 +279,7 @@
               id="btn-submit"
               class="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >
-              Guardar Lançamento 🌸
+              Lançar Conta 🌸
             </button>
             <button 
               type="button" 
@@ -335,7 +336,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Configuração oficial do seu Firebase
     const firebaseConfig = {
@@ -399,13 +400,13 @@
       if (tabName === 'list') {
         viewList.classList.remove('hidden');
         viewChart.classList.add('hidden');
-        btnTabList.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
+        btnTabList.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer flex items-center gap-1.5";
         btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 p-2 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center";
       } else {
         viewList.classList.add('hidden');
         viewChart.classList.remove('hidden');
         btnTabChart.className = "bg-pink-100 text-pink-700 p-2 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
-        btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
+        btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer flex items-center gap-1.5";
         renderCharts(currentFilteredTransactions);
       }
     };
@@ -537,7 +538,6 @@
       const d = new Date(year, month, day);
       d.setMonth(d.getMonth() + monthsToAdd);
 
-      // Tratar viradas de mês com dias 29, 30, 31
       if (d.getDate() !== day) {
         d.setDate(0); 
       }
@@ -580,6 +580,8 @@
         } else {
           // Novo Lançamento (Com suporte a parcelamento)
           if (isInstallment && installmentCount > 1) {
+            const installmentGroupId = `inst_${Date.now()}`; // Identificador único do grupo de parcelas
+
             for (let i = 0; i < installmentCount; i++) {
               const installmentDueDate = addMonthsToDate(baseDueDate, i);
               const descWithParcel = `${rawDescription} (${i + 1}/${installmentCount})`;
@@ -591,8 +593,10 @@
                 category,
                 person,
                 dueDate: installmentDueDate,
-                isPaid: i === 0 ? isPaid : (type === 'income'), // Apenas a 1ª herda o checkbox se despesa
-                createdAt: new Date().toISOString()
+                isPaid: i === 0 ? isPaid : (type === 'income'),
+                createdAt: new Date().toISOString(),
+                installmentGroupId: installmentGroupId,
+                rawBaseDescription: rawDescription
               });
             }
           } else {
@@ -659,7 +663,7 @@
       document.getElementById('installment-container').classList.remove('hidden');
 
       document.getElementById('form-title').innerHTML = '<span class="text-pink-400">✨</span> Novo Lançamento';
-      document.getElementById('btn-submit').innerText = 'Guardar Lançamento 🌸';
+      document.getElementById('btn-submit').innerText = 'Lançar Conta 🌸';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
 
       handleTypeChange();
@@ -674,15 +678,72 @@
       }
     };
 
+    // EXCLUSÃO DE LANÇAMENTOS (ÚNICO OU PARCELADO COMPLETO)
     window.deleteTransaction = async function(id) {
-      if (confirm("Deseja apagar este lançamento?")) {
+      const targetTransaction = allTransactions.find(t => t.id === id);
+      if (!targetTransaction) return;
+
+      // Identifica se faz parte de um grupo de parcelas
+      const groupId = targetTransaction.installmentGroupId;
+      
+      // Procura parcelas equivalentes por ID de grupo ou por formato de descrição "(X/Y)"
+      let relatedInstallments = [];
+      if (groupId) {
+        relatedInstallments = allTransactions.filter(t => t.installmentGroupId === groupId);
+      } else {
+        const match = targetTransaction.description.match(/^(.*?)\s*\(\d+\/\d+\)$/);
+        if (match) {
+          const baseName = match[1].trim();
+          relatedInstallments = allTransactions.filter(t => {
+            const tMatch = t.description.match(/^(.*?)\s*\(\d+\/\d+\)$/);
+            return tMatch && tMatch[1].trim() === baseName && t.type === targetTransaction.type;
+          });
+        }
+      }
+
+      // Se houver parcelas associadas
+      if (relatedInstallments.length > 1) {
+        const deleteAll = confirm(
+          `Este lançamento possui ${relatedInstallments.length} parcelas salvas no sistema.\n\n` +
+          `• Clique em [OK] para excluir TODAS as ${relatedInstallments.length} parcelas deste lançamento.\n` +
+          `• Clique em [Cancelar] para excluir APENAS esta parcela individual.`
+        );
+
         try {
-          await deleteDoc(doc(db, 'transactions', id));
+          if (deleteAll) {
+            const batch = writeBatch(db);
+            relatedInstallments.forEach(item => {
+              batch.delete(doc(db, 'transactions', item.id));
+            });
+            await batch.commit();
+          } else {
+            const deleteSingle = confirm("Deseja apagar apenas esta parcela individual?");
+            if (deleteSingle) {
+              await deleteDoc(doc(db, 'transactions', id));
+            } else {
+              return;
+            }
+          }
+
           if (document.getElementById('editing-id').value === id) {
             cancelEdit();
           }
         } catch (err) {
-          console.error("Erro ao excluir:", err);
+          console.error("Erro ao excluir parcelas:", err);
+          alert("Erro ao excluir o lançamento parcelado.");
+        }
+
+      } else {
+        // Exclusão normal de 1 lançamento não parcelado
+        if (confirm("Deseja apagar este lançamento?")) {
+          try {
+            await deleteDoc(doc(db, 'transactions', id));
+            if (document.getElementById('editing-id').value === id) {
+              cancelEdit();
+            }
+          } catch (err) {
+            console.error("Erro ao excluir:", err);
+          }
         }
       }
     };
