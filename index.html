@@ -82,21 +82,24 @@
         >
           📋 Lançamentos
         </button>
+        
+        <!-- Botão Gráfico (Apenas Ícone) -->
         <button 
           id="btn-tab-chart" 
           onclick="switchTab('chart')"
-          class="bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer"
+          class="bg-white/80 text-slate-600 hover:bg-pink-50 p-2.5 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center"
+          title="Gráficos"
         >
-          📊 Gráficos
+          📊
         </button>
 
-        <!-- Botão de Backup Local -->
+        <!-- Botão Backup (Apenas Ícone) -->
         <button 
           onclick="exportBackup()" 
-          class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-3 py-2 rounded-2xl text-xs font-semibold border border-emerald-200 transition cursor-pointer flex items-center gap-1"
-          title="Fazer Backup Local dos Dados"
+          class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 p-2.5 rounded-2xl text-sm font-semibold border border-emerald-200 transition cursor-pointer flex items-center justify-center"
+          title="Fazer Backup Local"
         >
-          💾 Backup
+          💾
         </button>
 
         <!-- Filtro por Mês -->
@@ -272,17 +275,17 @@
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <!-- Gráfico de Despesas -->
+        <!-- Gráfico de Despesas (Todas) -->
         <div class="bg-rose-50/30 p-4 rounded-2xl border border-rose-100 flex flex-col items-center">
-          <h3 class="text-sm font-bold text-rose-500 mb-2">🌷 Despesas Pagas por Categoria</h3>
+          <h3 class="text-sm font-bold text-rose-500 mb-2">🌷 Despesas por Categoria (Todas)</h3>
           <div class="w-full max-w-[300px]">
             <canvas id="expenseChart"></canvas>
           </div>
         </div>
 
-        <!-- Gráfico de Receitas -->
+        <!-- Gráfico de Receitas (Por Pessoa) -->
         <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center">
-          <h3 class="text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Categoria</h3>
+          <h3 class="text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Pessoa</h3>
           <div class="w-full max-w-[300px]">
             <canvas id="incomeChart"></canvas>
           </div>
@@ -349,11 +352,11 @@
         viewList.classList.remove('hidden');
         viewChart.classList.add('hidden');
         btnTabList.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
-        btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
+        btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 p-2.5 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center";
       } else {
         viewList.classList.add('hidden');
         viewChart.classList.remove('hidden');
-        btnTabChart.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
+        btnTabChart.className = "bg-pink-100 text-pink-700 p-2.5 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
         btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
         renderCharts(currentFilteredTransactions);
       }
@@ -660,14 +663,14 @@
       }).join('');
     }
 
-    // Renderização dos Gráficos de Pizza (Despesas Pagas e Receitas)
+    // Renderização dos Gráficos de Pizza
     function renderCharts(transactions) {
-      // 1. Gráfico de Despesas
+      // 1. Gráfico de Despesas (TODAS as despesas: pagas e pendentes)
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
         transactions.forEach(t => {
-          if (t.type === 'expense' && t.isPaid) {
+          if (t.type === 'expense') {
             expenseTotals[t.category] = (expenseTotals[t.category] || 0) + t.amount;
           }
         });
@@ -690,13 +693,14 @@
         });
       }
 
-      // 2. Gráfico de Receitas
+      // 2. Gráfico de Receitas (Categorizado por Esposa, Marido e Ambos)
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
         transactions.forEach(t => {
           if (t.type === 'income') {
-            incomeTotals[t.category] = (incomeTotals[t.category] || 0) + t.amount;
+            const personKey = t.person || 'Ambos';
+            incomeTotals[personKey] = (incomeTotals[personKey] || 0) + t.amount;
           }
         });
 
@@ -708,7 +712,7 @@
             labels: Object.keys(incomeTotals),
             datasets: [{
               data: Object.values(incomeTotals),
-              backgroundColor: ['#4ADE80', '#34D399', '#38BDF8', '#818CF8', '#F472B6', '#FBBF24']
+              backgroundColor: ['#F472B6', '#38BDF8', '#4ADE80', '#FBBF24']
             }]
           },
           options: {
