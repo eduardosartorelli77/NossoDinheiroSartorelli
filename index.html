@@ -256,12 +256,23 @@
         </form>
       </div>
 
-      <!-- Lista de Transações -->
-      <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
-        <div class="flex justify-between items-center mb-4">
+      <!-- Lista de Transações (Contas do Mês) -->
+      <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <h2 class="text-lg font-semibold text-slate-800">Contas do Mês</h2>
-          <span class="text-xs text-pink-400 font-medium bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
+          
+          <!-- Campo de Busca por Descrição -->
+          <div class="relative w-full sm:w-64">
+            <input 
+              type="text" 
+              id="search-description" 
+              placeholder="🔍 Buscar descrição..." 
+              oninput="filterAndRenderApp()"
+              class="w-full px-4 py-2 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-xs text-slate-700"
+            />
+          </div>
         </div>
+
         <div id="transactions-list" class="space-y-3">
           <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
         </div>
@@ -275,7 +286,7 @@
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <!-- Gráfico de Despesas (Todas) -->
+        <!-- Gráfico de Despesas -->
         <div class="bg-rose-50/30 p-4 rounded-2xl border border-rose-100 flex flex-col items-center">
           <h3 class="text-sm font-bold text-rose-500 mb-2">🌷 Despesas por Categoria (Todas)</h3>
           <div class="w-full max-w-[300px]">
@@ -283,7 +294,7 @@
           </div>
         </div>
 
-        <!-- Gráfico de Receitas (Por Pessoa) -->
+        <!-- Gráfico de Receitas -->
         <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center">
           <h3 class="text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Pessoa</h3>
           <div class="w-full max-w-[300px]">
@@ -356,7 +367,7 @@
       } else {
         viewList.classList.add('hidden');
         viewChart.classList.remove('hidden');
-        btnTabChart.className = "bg-pink-100 text-pink-700 p-2.5 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
+        btnTabChart.className = "bg-pink-100 p-2.5 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
         btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
         renderCharts(currentFilteredTransactions);
       }
@@ -469,10 +480,13 @@
 
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
+      const searchTerm = document.getElementById('search-description').value.toLowerCase().trim();
       
       currentFilteredTransactions = allTransactions.filter(t => {
         if (!t.dueDate) return false;
-        return t.dueDate.startsWith(selectedMonth);
+        const matchesMonth = t.dueDate.startsWith(selectedMonth);
+        const matchesSearch = searchTerm === '' || (t.description && t.description.toLowerCase().includes(searchTerm));
+        return matchesMonth && matchesSearch;
       });
 
       currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
@@ -594,7 +608,11 @@
       let totalExpensePaid = 0;
       let totalExpensePending = 0;
 
-      transactions.forEach(t => {
+      // Os totais do topo continuam calculando com base em TODO o mês selecionado
+      const selectedMonth = document.getElementById('filter-month').value;
+      const monthTransactions = allTransactions.filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth));
+
+      monthTransactions.forEach(t => {
         if (t.type === 'income') {
           totalIncome += t.amount;
         } else if (t.type === 'expense') {
@@ -615,7 +633,7 @@
       document.getElementById('total-pending').innerText = `R$ ${totalExpensePending.toFixed(2)}`;
 
       if (transactions.length === 0) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para esta busca. 🌸</p>';
         return;
       }
 
@@ -665,11 +683,14 @@
 
     // Renderização dos Gráficos de Pizza
     function renderCharts(transactions) {
-      // 1. Gráfico de Despesas (TODAS as despesas: pagas e pendentes)
+      const selectedMonth = document.getElementById('filter-month').value;
+      const monthTransactions = allTransactions.filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth));
+
+      // 1. Gráfico de Despesas (TODAS as despesas do mês)
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
-        transactions.forEach(t => {
+        monthTransactions.forEach(t => {
           if (t.type === 'expense') {
             expenseTotals[t.category] = (expenseTotals[t.category] || 0) + t.amount;
           }
@@ -693,11 +714,11 @@
         });
       }
 
-      // 2. Gráfico de Receitas (Categorizado por Esposa, Marido e Ambos)
+      // 2. Gráfico de Receitas (Por Pessoa do mês)
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
-        transactions.forEach(t => {
+        monthTransactions.forEach(t => {
           if (t.type === 'income') {
             const personKey = t.person || 'Ambos';
             incomeTotals[personKey] = (incomeTotals[personKey] || 0) + t.amount;
