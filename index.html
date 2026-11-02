@@ -6,6 +6,8 @@
   <title>Família Sartorelli 🌸</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js para Gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Google Fonts (Inter) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -72,6 +74,22 @@
         <p class="text-xs text-pink-400 mt-1 font-medium" id="status-conexao">Sincronizado ✨</p>
       </div>
       <div class="flex items-center gap-3">
+        <!-- Navegação de Menus/Abas -->
+        <button 
+          id="btn-tab-list" 
+          onclick="switchTab('list')"
+          class="bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer"
+        >
+          📋 Lançamentos
+        </button>
+        <button 
+          id="btn-tab-chart" 
+          onclick="switchTab('chart')"
+          class="bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer"
+        >
+          📊 Gráfico
+        </button>
+
         <!-- Filtro por Mês -->
         <div class="flex items-center gap-2 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-2 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
           <span class="text-sm">📅</span>
@@ -106,132 +124,145 @@
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-rose-100/50">
         <p class="text-[11px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
-          🌷 Despesas
+          🌷 Despesas Pagas
         </p>
         <p id="total-expense" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-amber-100/50">
         <p class="text-[11px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">
-          🐾 Gastos com Gatos
+          ⏳ Despesas Pendentes
         </p>
-        <p id="total-cats" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
+        <p id="total-pending" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
       </div>
     </div>
 
-    <!-- Formulário de Adição / Edição -->
-    <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
-      <h2 id="form-title" class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-        <span class="text-pink-400">✨</span> Novo Lançamento
-      </h2>
-      <form id="transaction-form" class="grid grid-cols-1 sm:grid-cols-6 gap-3">
-        <input type="hidden" id="editing-id" value="">
-        
-        <div class="sm:col-span-2">
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Descrição</label>
-          <input 
-            type="text" 
-            id="description" 
-            placeholder="Ex: Conta de Luz, Ração..." 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            required
-          />
-        </div>
-
-        <div>
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Valor (R$)</label>
-          <input 
-            type="number" 
-            step="0.01" 
-            id="amount" 
-            placeholder="0,00" 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            required
-          />
-        </div>
-
-        <div>
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Tipo</label>
-          <select 
-            id="type" 
-            onchange="handleTypeChange()"
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          >
-            <option value="expense">Despesa</option>
-            <option value="income">Receita</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
-          <select 
-            id="category" 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          >
-            <!-- Preenchido via script -->
-          </select>
-        </div>
-
-        <!-- Seletor de pessoa (Receitas) -->
-        <div id="person-container" class="hidden">
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Quem Recebeu?</label>
-          <select 
-            id="person" 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          >
-            <option value="Ambos">Ambos</option>
-            <option value="Marido">Marido</option>
-            <option value="Esposa">Esposa</option>
-          </select>
-        </div>
-
-        <!-- Campo de Vencimento -->
-        <div id="date-container" class="sm:col-span-3">
-          <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento</label>
-          <input 
-            type="date" 
-            id="dueDate" 
-            onclick="this.showPicker()"
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer"
-            required
-          />
-        </div>
-
-        <!-- Opção de Pago -->
-        <div id="paid-container" class="sm:col-span-3 flex items-center justify-start px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/30 self-end">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="isPaid" class="w-4 h-4 text-emerald-500 rounded border-pink-200 focus:ring-emerald-300 accent-emerald-500">
-            <label for="isPaid" class="text-xs font-medium text-slate-700 cursor-pointer">Pago</label>
+    <!-- SEÇÃO 1: FORMULÁRIO E LISTA DE LANÇAMENTOS -->
+    <div id="view-list" class="space-y-8">
+      <!-- Formulário de Adição / Edição -->
+      <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
+        <h2 id="form-title" class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <span class="text-pink-400">✨</span> Novo Lançamento
+        </h2>
+        <form id="transaction-form" class="grid grid-cols-1 sm:grid-cols-6 gap-3">
+          <input type="hidden" id="editing-id" value="">
+          
+          <div class="sm:col-span-2">
+            <label class="text-xs font-medium text-slate-500 mb-1 block">Descrição</label>
+            <input 
+              type="text" 
+              id="description" 
+              placeholder="Ex: Conta de Luz, Mercado..." 
+              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              required
+            />
           </div>
-        </div>
 
-        <div class="sm:col-span-6 flex items-center gap-2 mt-2">
-          <button 
-            type="submit" 
-            id="btn-submit"
-            class="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-          >
-            Guardar Lançamento 🌸
-          </button>
-          <button 
-            type="button" 
-            id="btn-cancel-edit"
-            onclick="cancelEdit()"
-            class="hidden bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-6 rounded-2xl transition text-sm cursor-pointer"
-          >
-            Cancelar
-          </button>
+          <div>
+            <label class="text-xs font-medium text-slate-500 mb-1 block">Valor (R$)</label>
+            <input 
+              type="number" 
+              step="0.01" 
+              id="amount" 
+              placeholder="0,00" 
+              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="text-xs font-medium text-slate-500 mb-1 block">Tipo</label>
+            <select 
+              id="type" 
+              onchange="handleTypeChange()"
+              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+            >
+              <option value="expense">Despesa</option>
+              <option value="income">Receita</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
+            <select 
+              id="category" 
+              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+            >
+              <!-- Preenchido via script -->
+            </select>
+          </div>
+
+          <!-- Seletor de pessoa (Receitas) -->
+          <div id="person-container" class="hidden">
+            <label class="text-xs font-medium text-slate-500 mb-1 block">Quem Recebeu?</label>
+            <select 
+              id="person" 
+              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+            >
+              <option value="Ambos">Ambos</option>
+              <option value="Marido">Marido</option>
+              <option value="Esposa">Esposa</option>
+            </select>
+          </div>
+
+          <!-- Campo de Vencimento -->
+          <div id="date-container" class="sm:col-span-3">
+            <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento</label>
+            <input 
+              type="date" 
+              id="dueDate" 
+              onclick="this.showPicker()"
+              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer"
+              required
+            />
+          </div>
+
+          <!-- Opção de Pago -->
+          <div id="paid-container" class="sm:col-span-3 flex items-center justify-start px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/30 self-end">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="isPaid" class="w-4 h-4 text-emerald-500 rounded border-pink-200 focus:ring-emerald-300 accent-emerald-500">
+              <label for="isPaid" class="text-xs font-medium text-slate-700 cursor-pointer">Pago</label>
+            </div>
+          </div>
+
+          <div class="sm:col-span-6 flex items-center gap-2 mt-2">
+            <button 
+              type="submit" 
+              id="btn-submit"
+              class="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+            >
+              Guardar Lançamento 🌸
+            </button>
+            <button 
+              type="button" 
+              id="btn-cancel-edit"
+              onclick="cancelEdit()"
+              class="hidden bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-6 rounded-2xl transition text-sm cursor-pointer"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Lista de Transações -->
+      <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-slate-800">Contas do Mês</h2>
+          <span class="text-xs text-pink-400 font-medium bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
         </div>
-      </form>
+        <div id="transactions-list" class="space-y-3">
+          <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
+        </div>
+      </div>
     </div>
 
-    <!-- Lista de Transações -->
-    <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-slate-800">Contas do Mês</h2>
-        <span class="text-xs text-pink-400 font-medium bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
-      </div>
-      <div id="transactions-list" class="space-y-3">
-        <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
+    <!-- SEÇÃO 2: GRÁFICO PIZZA -->
+    <div id="view-chart" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden">
+      <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+        <span class="text-pink-400">📊</span> Gráficos de Gastos do Mês
+      </h2>
+      <div class="max-w-md mx-auto py-4">
+        <canvas id="expenseChart" class="w-full max-h-[350px]"></canvas>
       </div>
     </div>
 
@@ -262,17 +293,38 @@
     const appScreen = document.getElementById('app');
     const loginError = document.getElementById('login-error');
 
-    // Monitorar estado de autenticação (Usuário Logado x Deslogado)
     let unsubscribeFirestore = null;
+    let pieChartInstance = null;
+    let currentFilteredTransactions = [];
 
+    // Alternar entre abas
+    window.switchTab = function(tabName) {
+      const viewList = document.getElementById('view-list');
+      const viewChart = document.getElementById('view-chart');
+      const btnTabList = document.getElementById('btn-tab-list');
+      const btnTabChart = document.getElementById('btn-tab-chart');
+
+      if (tabName === 'list') {
+        viewList.classList.remove('hidden');
+        viewChart.classList.add('hidden');
+        btnTabList.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
+        btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
+      } else {
+        viewList.classList.add('hidden');
+        viewChart.classList.remove('hidden');
+        btnTabChart.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
+        btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
+        renderChart(currentFilteredTransactions);
+      }
+    };
+
+    // Monitorar estado de autenticação
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Usuário AUTENTICADO
         loginScreen.classList.add('hidden');
         appScreen.classList.remove('hidden');
         initApp();
       } else {
-        // Usuário DESLOGADO
         loginScreen.classList.remove('hidden');
         appScreen.classList.add('hidden');
         if (unsubscribeFirestore) unsubscribeFirestore();
@@ -307,7 +359,6 @@
       document.getElementById('filter-month').value = currentYearMonth;
       document.getElementById('dueDate').value = now.toISOString().split('T')[0];
 
-      // Ler dados do Firestore
       const q = query(collection(db, 'transactions'), orderBy('dueDate', 'asc'));
       
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
@@ -322,18 +373,18 @@
       });
     }
 
+    // Categorias Solicitadas
     const categoriesMap = {
       expense: [
-        '💧 Água', 
-        '⚡ Luz', 
-        '🔥 Gás', 
-        '🌐 Internet/TV', 
-        '🏠 Aluguel/Condomínio', 
-        '🛒 Mercado/Alimentação',
-        '🐾 Gatos', 
-        '🚗 Transporte', 
-        '🌷 Lazer & Casal', 
-        '📦 Outros'
+        'Contas de Consumo', 
+        'Moradia', 
+        'Mercado', 
+        'Alimentação', 
+        'Educação', 
+        'Lazer',
+        'Carro', 
+        'Saúde', 
+        'Outros'
       ],
       income: ['Salário', 'Freelance', 'Investimentos', 'Outros']
     };
@@ -375,14 +426,15 @@
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
       
-      const filtered = allTransactions.filter(t => {
+      currentFilteredTransactions = allTransactions.filter(t => {
         if (!t.dueDate) return false;
         return t.dueDate.startsWith(selectedMonth);
       });
 
-      filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
-      renderApp(filtered);
+      renderApp(currentFilteredTransactions);
+      renderChart(currentFilteredTransactions);
     }
 
     // Salvar ou Atualizar transação
@@ -495,24 +547,31 @@
       const listEl = document.getElementById('transactions-list');
       
       let totalIncome = 0;
-      let totalExpense = 0;
-      let catExpense = 0;
+      let totalExpensePaid = 0;
+      let totalExpensePending = 0;
 
       transactions.forEach(t => {
-        if (t.type === 'income') totalIncome += t.amount;
-        if (t.type === 'expense') {
-          totalExpense += t.amount;
-          if (t.category.includes('Gatos')) catExpense += t.amount;
+        if (t.type === 'income') {
+          totalIncome += t.amount;
+        } else if (t.type === 'expense') {
+          // Contabiliza somente despesas PAGAS no total de despesas
+          if (t.isPaid) {
+            totalExpensePaid += t.amount;
+          } else {
+            // Contabiliza despesas PENDENTES
+            totalExpensePending += t.amount;
+          }
         }
       });
 
-      const balance = totalIncome - totalExpense;
+      // Saldo considerando receitas menos as despesas efetivamente pagas
+      const balance = totalIncome - totalExpensePaid;
 
       document.getElementById('total-balance').innerText = `R$ ${balance.toFixed(2)}`;
       document.getElementById('total-balance').className = `text-2xl font-bold mt-2 ${balance >= 0 ? 'text-slate-800' : 'text-rose-500'}`;
       document.getElementById('total-income').innerText = `R$ ${totalIncome.toFixed(2)}`;
-      document.getElementById('total-expense').innerText = `R$ ${totalExpense.toFixed(2)}`;
-      document.getElementById('total-cats').innerText = `R$ ${catExpense.toFixed(2)}`;
+      document.getElementById('total-expense').innerText = `R$ ${totalExpensePaid.toFixed(2)}`;
+      document.getElementById('total-pending').innerText = `R$ ${totalExpensePending.toFixed(2)}`;
 
       if (transactions.length === 0) {
         listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
@@ -520,9 +579,8 @@
       }
 
       listEl.innerHTML = transactions.map(t => {
-        const isCat = t.category.includes('Gatos');
         const isInc = t.type === 'income';
-        const iconBg = isCat ? 'bg-amber-50 text-amber-600 border-amber-100' : isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100';
+        const iconBg = isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100';
         
         const [year, month, day] = t.dueDate.split('-');
         const formattedDate = `${day}/${month}/${year}`;
@@ -536,7 +594,7 @@
                 </button>
               ` : ''}
               <div class="w-10 h-10 rounded-2xl border flex items-center justify-center text-lg ${iconBg}">
-                ${isInc ? '🌸' : t.category.split(' ')[0]}
+                ${isInc ? '🌸' : '💸'}
               </div>
               <div>
                 <p class="font-medium text-slate-800 text-sm ${t.isPaid && t.type === 'expense' ? 'line-through text-slate-400' : ''}">${t.description}</p>
@@ -561,6 +619,53 @@
           </div>
         `;
       }).join('');
+    }
+
+    // Renderização do Gráfico em Pizza (Somente Despesas Pagas)
+    function renderChart(transactions) {
+      const ctx = document.getElementById('expenseChart');
+      if (!ctx) return;
+
+      const categoryTotals = {};
+      
+      transactions.forEach(t => {
+        if (t.type === 'expense' && t.isPaid) {
+          categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+        }
+      });
+
+      const labels = Object.keys(categoryTotals);
+      const data = Object.values(categoryTotals);
+
+      if (pieChartInstance) {
+        pieChartInstance.destroy();
+      }
+
+      if (labels.length === 0) {
+        return;
+      }
+
+      pieChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: [
+              '#F472B6', '#FB7185', '#38BDF8', '#4ADE80', 
+              '#FBBF24', '#A78BFA', '#F43F5E', '#10B981', '#94A3B8'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
     }
   </script>
 </body>
