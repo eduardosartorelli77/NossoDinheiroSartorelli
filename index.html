@@ -802,7 +802,35 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+            plugins: { 
+              legend: { 
+                position: 'bottom', 
+                labels: { 
+                  boxWidth: 10, 
+                  font: { size: 10 },
+                  generateLabels: (chart) => {
+                    const data = chart.data;
+                    if (data.labels.length && data.datasets.length) {
+                      return data.labels.map((label, i) => {
+                        const meta = chart.getDatasetMeta(0);
+                        const style = meta.controller.getStyle(i);
+                        // Remove emojis/símbolos mantendo apenas o texto da categoria
+                        const cleanLabel = label.replace(/\p{Extended_Pictographic}/gu, '').trim();
+                        return {
+                          text: cleanLabel,
+                          fillStyle: style.backgroundColor,
+                          strokeStyle: style.borderColor,
+                          lineWidth: style.borderWidth,
+                          hidden: !chart.isDatasetVisible(0) || meta.data[i].hidden,
+                          index: i
+                        };
+                      });
+                    }
+                    return [];
+                  }
+                } 
+              } 
+            },
             onClick: (e, elements) => {
               if (elements.length > 0) {
                 const index = elements[0].index;
@@ -837,7 +865,35 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+            plugins: { 
+              legend: { 
+                position: 'bottom', 
+                labels: { 
+                  boxWidth: 10, 
+                  font: { size: 10 },
+                  generateLabels: (chart) => {
+                    const data = chart.data;
+                    if (data.labels.length && data.datasets.length) {
+                      return data.labels.map((label, i) => {
+                        const meta = chart.getDatasetMeta(0);
+                        const style = meta.controller.getStyle(i);
+                        // Remove emojis/símbolos mantendo apenas o texto
+                        const cleanLabel = label.replace(/\p{Extended_Pictographic}/gu, '').trim();
+                        return {
+                          text: cleanLabel,
+                          fillStyle: style.backgroundColor,
+                          strokeStyle: style.borderColor,
+                          lineWidth: style.borderWidth,
+                          hidden: !chart.isDatasetVisible(0) || meta.data[i].hidden,
+                          index: i
+                        };
+                      });
+                    }
+                    return [];
+                  }
+                } 
+              } 
+            },
             onClick: (e, elements) => {
               if (elements.length > 0) {
                 const index = elements[0].index;
