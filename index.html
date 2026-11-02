@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ... existing code ... -->
   <title>Família Sartorelli 🌸</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js para o gráfico de pizza -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Google Fonts (Inter) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -18,84 +16,12 @@
 <body class="text-slate-700 p-4 sm:p-8 min-h-screen">
 
   <!-- ==================== TELA DE LOGIN ==================== -->
-  <div id="login-screen" class="max-w-md mx-auto my-12 bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-pink-100 flex flex-col justify-center min-h-[400px]">
-    <div class="text-center mb-6">
-      <span class="text-4xl">💖</span>
-      <h1 class="text-2xl font-bold text-slate-800 mt-2">Família Sartorelli</h1>
-      <p class="text-xs text-pink-400 font-medium mt-1">Entre com seu e-mail e senha para acessar</p>
-    </div>
-
-    <form id="login-form" class="space-y-4">
-      <div>
-        <label class="text-xs font-medium text-slate-500 mb-1 block">E-mail</label>
-        <input 
-          type="email" 
-          id="login-email" 
-          placeholder="seu-email@exemplo.com" 
-          class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          required
-        />
-      </div>
-
-      <div>
-        <label class="text-xs font-medium text-slate-500 mb-1 block">Senha</label>
-        <input 
-          type="password" 
-          id="login-password" 
-          placeholder="••••••••" 
-          class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          required
-        />
-      </div>
-
-      <p id="login-error" class="text-xs text-rose-500 text-center font-medium hidden"></p>
-
-      <button 
-        type="submit" 
-        id="btn-login"
-        class="w-full bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer mt-4"
-      >
-        Entrar no Sistema 🌸
-      </button>
-    </form>
-  </div>
-
-  <!-- ==================== PAINEL FINANCEIRO (PROTEGIDO) ==================== -->
-  <div class="max-w-4xl mx-auto space-y-8 hidden" id="app">
-    
-    <!-- Cabeçalho -->
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-pink-100/60">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <span class="text-pink-400">💖</span> Família Sartorelli
-        </h1>
-        <p class="text-xs text-pink-400 mt-1 font-medium" id="status-conexao">Sincronizado ✨</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <!-- Filtro por Mês -->
-        <div class="flex items-center gap-2 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-2 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
-          <span class="text-sm">📅</span>
-          <label for="filter-month" class="text-xs font-semibold text-pink-600 uppercase tracking-wider cursor-pointer">Mês:</label>
-          <input 
-            type="month" 
-            id="filter-month" 
-            onclick="this.showPicker()"
-            class="bg-transparent text-sm font-medium text-slate-700 focus:outline-none cursor-pointer"
-          >
-        </div>
-        <button 
-          id="btn-logout" 
-          class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-4 py-2.5 rounded-2xl text-sm font-medium border border-rose-200/50 transition cursor-pointer"
-        >
-          <span>🚪</span> Sair
-        </button>
-      </div>
-    </header>
+<!-- ... existing code ... -->
 
     <!-- Cards de Resumo -->
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
       <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-pink-100/50">
-        <p class="text-[11px] text-pink-400 font-bold uppercase tracking-wider">Saldo do Mês</p>
+        <p class="text-[11px] text-pink-400 font-bold uppercase tracking-wider">Saldo do Mês (PAGO)</p>
         <p id="total-balance" class="text-2xl font-bold mt-2 text-slate-800">R$ 0,00</p>
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-emerald-100/50">
@@ -106,61 +32,39 @@
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-rose-100/50">
         <p class="text-[11px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
-          🌷 Despesas
+          🌷 Despesas Pagas
         </p>
         <p id="total-expense" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
       </div>
       <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-amber-100/50">
         <p class="text-[11px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">
-          🐾 Gastos com Gatos
+          ⏳ Despesas Pendentes
         </p>
-        <p id="total-cats" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
+        <p id="total-pending" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
       </div>
     </div>
 
+    <!-- Navegação por Abas (Lista / Gráfico) -->
+    <div class="flex items-center gap-2 border-b border-pink-100/60 pb-2">
+      <button 
+        id="tab-btn-list" 
+        onclick="switchTab('list')" 
+        class="px-5 py-2.5 rounded-2xl text-sm font-semibold transition bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-xs cursor-pointer flex items-center gap-2"
+      >
+        <span>📋</span> Lista de Contas
+      </button>
+      <button 
+        id="tab-btn-chart" 
+        onclick="switchTab('chart')" 
+        class="px-5 py-2.5 rounded-2xl text-sm font-medium transition bg-white/70 hover:bg-white text-slate-600 border border-pink-100 cursor-pointer flex items-center gap-2"
+      >
+        <span>📊</span> Gráficos
+      </button>
+    </div>
+
     <!-- Formulário de Adição / Edição -->
-    <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
-      <h2 id="form-title" class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-        <span class="text-pink-400">✨</span> Novo Lançamento
-      </h2>
-      <form id="transaction-form" class="grid grid-cols-1 sm:grid-cols-6 gap-3">
-        <input type="hidden" id="editing-id" value="">
-        
-        <div class="sm:col-span-2">
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Descrição</label>
-          <input 
-            type="text" 
-            id="description" 
-            placeholder="Ex: Conta de Luz, Ração..." 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            required
-          />
-        </div>
-
-        <div>
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Valor (R$)</label>
-          <input 
-            type="number" 
-            step="0.01" 
-            id="amount" 
-            placeholder="0,00" 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-            required
-          />
-        </div>
-
-        <div>
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Tipo</label>
-          <select 
-            id="type" 
-            onchange="handleTypeChange()"
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          >
-            <option value="expense">Despesa</option>
-            <option value="income">Receita</option>
-          </select>
-        </div>
-
+    <div id="section-form" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
+<!-- ... existing code ... -->
         <div>
           <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
           <select 
@@ -170,68 +74,33 @@
             <!-- Preenchido via script -->
           </select>
         </div>
-
-        <!-- Seletor de pessoa (Receitas) -->
-        <div id="person-container" class="hidden">
-          <label class="text-xs font-medium text-slate-500 mb-1 block">Quem Recebeu?</label>
-          <select 
-            id="person" 
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
-          >
-            <option value="Ambos">Ambos</option>
-            <option value="Marido">Marido</option>
-            <option value="Esposa">Esposa</option>
-          </select>
-        </div>
-
-        <!-- Campo de Vencimento -->
-        <div id="date-container" class="sm:col-span-3">
-          <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento</label>
-          <input 
-            type="date" 
-            id="dueDate" 
-            onclick="this.showPicker()"
-            class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer"
-            required
-          />
-        </div>
-
-        <!-- Opção de Pago -->
-        <div id="paid-container" class="sm:col-span-3 flex items-center justify-start px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/30 self-end">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="isPaid" class="w-4 h-4 text-emerald-500 rounded border-pink-200 focus:ring-emerald-300 accent-emerald-500">
-            <label for="isPaid" class="text-xs font-medium text-slate-700 cursor-pointer">Pago</label>
-          </div>
-        </div>
-
-        <div class="sm:col-span-6 flex items-center gap-2 mt-2">
-          <button 
-            type="submit" 
-            id="btn-submit"
-            class="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-semibold py-3 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-          >
-            Guardar Lançamento 🌸
-          </button>
-          <button 
-            type="button" 
-            id="btn-cancel-edit"
-            onclick="cancelEdit()"
-            class="hidden bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-6 rounded-2xl transition text-sm cursor-pointer"
-          >
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Lista de Transações -->
-    <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
+<!-- ... existing code ... -->
+    <!-- Conteúdo da Aba 1: Lista de Transações -->
+    <div id="tab-content-list" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-slate-800">Contas do Mês</h2>
         <span class="text-xs text-pink-400 font-medium bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
       </div>
       <div id="transactions-list" class="space-y-3">
         <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
+      </div>
+    </div>
+
+    <!-- Conteúdo da Aba 2: Gráfico em Pizza -->
+    <div id="tab-content-chart" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-lg font-semibold text-slate-800">Distribuição de Despesas Pagas</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Gráfico por categoria referente às contas marcadas como saldas</p>
+        </div>
+      </div>
+      
+      <div class="relative w-full max-w-md mx-auto aspect-square flex items-center justify-center p-2">
+        <canvas id="expenseChart"></canvas>
+      </div>
+
+      <div id="chart-legend-container" class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+        <!-- Legendas geradas via JS -->
       </div>
     </div>
 
@@ -262,24 +131,47 @@
     const appScreen = document.getElementById('app');
     const loginError = document.getElementById('login-error');
 
-    // Monitorar estado de autenticação (Usuário Logado x Deslogado)
     let unsubscribeFirestore = null;
+    let chartInstance = null;
+    let currentTab = 'list';
+
+    // Gerenciador de Abas
+    window.switchTab = function(tab) {
+      currentTab = tab;
+      const btnList = document.getElementById('tab-btn-list');
+      const btnChart = document.getElementById('tab-btn-chart');
+      const contentList = document.getElementById('tab-content-list');
+      const contentChart = document.getElementById('tab-content-chart');
+      const sectionForm = document.getElementById('section-form');
+
+      if (tab === 'list') {
+        btnList.className = "px-5 py-2.5 rounded-2xl text-sm font-semibold transition bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-xs cursor-pointer flex items-center gap-2";
+        btnChart.className = "px-5 py-2.5 rounded-2xl text-sm font-medium transition bg-white/70 hover:bg-white text-slate-600 border border-pink-100 cursor-pointer flex items-center gap-2";
+        contentList.classList.remove('hidden');
+        contentChart.classList.add('hidden');
+        sectionForm.classList.remove('hidden');
+      } else {
+        btnChart.className = "px-5 py-2.5 rounded-2xl text-sm font-semibold transition bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-xs cursor-pointer flex items-center gap-2";
+        btnList.className = "px-5 py-2.5 rounded-2xl text-sm font-medium transition bg-white/70 hover:bg-white text-slate-600 border border-pink-100 cursor-pointer flex items-center gap-2";
+        contentChart.classList.remove('hidden');
+        contentList.classList.add('hidden');
+        sectionForm.classList.add('hidden');
+        renderChart();
+      }
+    };
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Usuário AUTENTICADO
         loginScreen.classList.add('hidden');
         appScreen.classList.remove('hidden');
         initApp();
       } else {
-        // Usuário DESLOGADO
         loginScreen.classList.remove('hidden');
         appScreen.classList.add('hidden');
         if (unsubscribeFirestore) unsubscribeFirestore();
       }
     });
 
-    // Login Form Submit
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
@@ -295,19 +187,16 @@
       }
     });
 
-    // Logout
     document.getElementById('btn-logout').addEventListener('click', async () => {
       await signOut(auth);
     });
 
-    // Inicialização da aplicação após login
     function initApp() {
       const now = new Date();
       const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       document.getElementById('filter-month').value = currentYearMonth;
       document.getElementById('dueDate').value = now.toISOString().split('T')[0];
 
-      // Ler dados do Firestore
       const q = query(collection(db, 'transactions'), orderBy('dueDate', 'asc'));
       
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
@@ -322,20 +211,35 @@
       });
     }
 
+    // LISTA DE CATEGORIAS ATUALIZADA
     const categoriesMap = {
       expense: [
-        '💧 Água', 
-        '⚡ Luz', 
-        '🔥 Gás', 
-        '🌐 Internet/TV', 
-        '🏠 Aluguel/Condomínio', 
-        '🛒 Mercado/Alimentação',
-        '🐾 Gatos', 
-        '🚗 Transporte', 
-        '🌷 Lazer & Casal', 
-        '📦 Outros'
+        'Contas de Consumo',
+        'Moradia',
+        'Mercado',
+        'Alimentação',
+        'Educação',
+        'Lazer',
+        'Carro',
+        'Saúde',
+        'Outros'
       ],
       income: ['Salário', 'Freelance', 'Investimentos', 'Outros']
+    };
+
+    const categoryIcons = {
+      'Contas de Consumo': '⚡',
+      'Moradia': '🏠',
+      'Mercado': '🛒',
+      'Alimentação': '🍽️',
+      'Educação': '📚',
+      'Lazer': '🌷',
+      'Carro': '🚗',
+      'Saúde': '🩺',
+      'Outros': '📦',
+      'Salário': '💵',
+      'Freelance': '💻',
+      'Investimentos': '📈'
     };
 
     window.handleTypeChange = function() {
@@ -350,7 +254,7 @@
       categoriesMap[type].forEach(cat => {
         const option = document.createElement('option');
         option.value = cat;
-        option.textContent = cat;
+        option.textContent = `${categoryIcons[cat] || '📦'} ${cat}`;
         categorySelect.appendChild(option);
       });
 
@@ -369,23 +273,26 @@
     window.handleTypeChange();
 
     let allTransactions = [];
+    let currentFilteredTransactions = [];
 
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
 
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
       
-      const filtered = allTransactions.filter(t => {
+      currentFilteredTransactions = allTransactions.filter(t => {
         if (!t.dueDate) return false;
         return t.dueDate.startsWith(selectedMonth);
       });
 
-      filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
-      renderApp(filtered);
+      renderApp(currentFilteredTransactions);
+      if (currentTab === 'chart') {
+        renderChart();
+      }
     }
 
-    // Salvar ou Atualizar transação
     document.getElementById('transaction-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const editingId = document.getElementById('editing-id').value;
@@ -452,6 +359,7 @@
       document.getElementById('btn-submit').innerText = 'Atualizar Lançamento 🌸';
       document.getElementById('btn-cancel-edit').classList.remove('hidden');
 
+      if (currentTab === 'chart') switchTab('list');
       document.getElementById('transaction-form').scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -495,24 +403,29 @@
       const listEl = document.getElementById('transactions-list');
       
       let totalIncome = 0;
-      let totalExpense = 0;
-      let catExpense = 0;
+      let totalExpense = 0; // APENAS PAGAS
+      let totalPending = 0; // PENDENTES
 
       transactions.forEach(t => {
-        if (t.type === 'income') totalIncome += t.amount;
-        if (t.type === 'expense') {
-          totalExpense += t.amount;
-          if (t.category.includes('Gatos')) catExpense += t.amount;
+        if (t.type === 'income') {
+          totalIncome += t.amount;
+        } else if (t.type === 'expense') {
+          if (t.isPaid) {
+            totalExpense += t.amount; // Contabiliza apenas despesas pagas
+          } else {
+            totalPending += t.amount;
+          }
         }
       });
 
       const balance = totalIncome - totalExpense;
 
+      // Atualizar Cards
       document.getElementById('total-balance').innerText = `R$ ${balance.toFixed(2)}`;
       document.getElementById('total-balance').className = `text-2xl font-bold mt-2 ${balance >= 0 ? 'text-slate-800' : 'text-rose-500'}`;
       document.getElementById('total-income').innerText = `R$ ${totalIncome.toFixed(2)}`;
       document.getElementById('total-expense').innerText = `R$ ${totalExpense.toFixed(2)}`;
-      document.getElementById('total-cats').innerText = `R$ ${catExpense.toFixed(2)}`;
+      document.getElementById('total-pending').innerText = `R$ ${totalPending.toFixed(2)}`;
 
       if (transactions.length === 0) {
         listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
@@ -520,9 +433,9 @@
       }
 
       listEl.innerHTML = transactions.map(t => {
-        const isCat = t.category.includes('Gatos');
         const isInc = t.type === 'income';
-        const iconBg = isCat ? 'bg-amber-50 text-amber-600 border-amber-100' : isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-pink-50 text-pink-500 border-pink-100';
+        const iconSymbol = categoryIcons[t.category] || (isInc ? '🌸' : '📦');
+        const iconBg = isInc ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : t.isPaid ? 'bg-pink-50 text-pink-500 border-pink-100' : 'bg-rose-50 text-rose-400 border-rose-100';
         
         const [year, month, day] = t.dueDate.split('-');
         const formattedDate = `${day}/${month}/${year}`;
@@ -536,14 +449,14 @@
                 </button>
               ` : ''}
               <div class="w-10 h-10 rounded-2xl border flex items-center justify-center text-lg ${iconBg}">
-                ${isInc ? '🌸' : t.category.split(' ')[0]}
+                ${iconSymbol}
               </div>
               <div>
                 <p class="font-medium text-slate-800 text-sm ${t.isPaid && t.type === 'expense' ? 'line-through text-slate-400' : ''}">${t.description}</p>
                 <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                   <span class="text-[11px] bg-pink-50/80 text-pink-600 px-2 py-0.5 rounded-md font-medium border border-pink-100/50">${t.category}</span>
                   ${t.type === 'income' ? `<span class="text-xs text-slate-400">• ${t.person}</span>` : ''}
-                  <span class="text-xs ${t.isPaid ? 'text-slate-400' : 'text-rose-500 font-medium'}">• Venc: ${formattedDate}</span>
+                  <span class="text-xs ${t.isPaid ? 'text-slate-400' : 'text-rose-500 font-medium'}">• Venc: ${formattedDate} ${!t.isPaid && !isInc ? '(Pendente)' : ''}</span>
                 </div>
               </div>
             </div>
@@ -561,6 +474,98 @@
           </div>
         `;
       }).join('');
+    }
+
+    // RENDERIZAÇÃO DO GRÁFICO DE PIZZA
+    function renderChart() {
+      const ctx = document.getElementById('expenseChart');
+      if (!ctx) return;
+
+      // Filtrar apenas despesas PAGAS do mês atual
+      const paidExpenses = currentFilteredTransactions.filter(t => t.type === 'expense' && t.isPaid);
+
+      const categoryTotals = {};
+      paidExpenses.forEach(t => {
+        categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+      });
+
+      const labels = Object.keys(categoryTotals);
+      const data = Object.values(categoryTotals);
+
+      // Cores Pastel Suaves
+      const paletteColors = [
+        '#F472B6', // Rosa
+        '#A78BFA', // Roxo
+        '#34D399', // Menta
+        '#FBBF24', // Âmbar
+        '#60A5FA', // Azul
+        '#F87171', // Coral
+        '#F43F5E', // Rose
+        '#C084FC', // Violeta
+        '#9CA3AF'  // Cinza
+      ];
+
+      const legendContainer = document.getElementById('chart-legend-container');
+
+      if (labels.length === 0) {
+        if (chartInstance) chartInstance.destroy();
+        legendContainer.innerHTML = '<p class="col-span-full text-slate-400 text-center py-4">Nenhuma despesa paga registrada para este mês.</p>';
+        return;
+      }
+
+      const colors = labels.map((_, idx) => paletteColors[idx % paletteColors.length]);
+
+      // Atualiza legendas personalizadas
+      const totalSum = data.reduce((a, b) => a + b, 0);
+      legendContainer.innerHTML = labels.map((label, idx) => {
+        const val = data[idx];
+        const pct = ((val / totalSum) * 100).toFixed(1);
+        return `
+          <div class="flex items-center gap-2 p-2.5 rounded-2xl bg-slate-50/70 border border-slate-100">
+            <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${colors[idx]}"></span>
+            <div class="truncate">
+              <span class="font-medium text-slate-700 block truncate">${label}</span>
+              <span class="text-[11px] text-slate-400">R$ ${val.toFixed(2)} (${pct}%)</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false // Usamos a legenda customizada abaixo
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.raw || 0;
+                  return ` ${context.label}: R$ ${val.toFixed(2)}`;
+                }
+              }
+            }
+          },
+          cutout: '65%'
+        }
+      });
     }
   </script>
 </body>
