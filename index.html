@@ -67,14 +67,11 @@
     <!-- Cabeçalho -->
     <header class="bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <!-- Título e Tag Alinhados e na Cor Azul -->
-        <div class="flex flex-col items-start gap-1">
+        <div>
           <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
             <span class="text-pink-400">💖</span> Família Sartorelli
           </h1>
-          <span class="inline-flex items-center gap-1.5 bg-sky-50/85 hover:bg-sky-100/80 text-sky-600 px-3 py-1.5 rounded-2xl text-xs font-semibold border border-sky-200/80 transition cursor-default">
-            🏡 Planejamento para Nova Casa
-          </span>
+          <p class="text-xs text-pink-400 mt-0.5 font-medium">Planejamento para Nova Casa</p>
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
@@ -228,25 +225,10 @@
 
       <!-- Lista de Transações -->
       <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
-          <div class="flex items-center justify-between sm:justify-start gap-2">
-            <h2 class="text-base sm:text-lg font-semibold text-slate-800">Contas do Mês</h2>
-            <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
-          </div>
-          
-          <!-- Campo de Busca Restaurado -->
-          <div class="relative w-full sm:w-64">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">🔍</span>
-            <input 
-              type="text" 
-              id="search-input" 
-              placeholder="Buscar lançamento..." 
-              oninput="filterAndRenderApp()"
-              class="w-full pl-8 pr-3 py-1.5 rounded-2xl border border-pink-100 bg-pink-50/20 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300"
-            />
-          </div>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-base sm:text-lg font-semibold text-slate-800">Contas do Mês</h2>
+          <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
         </div>
-
         <div id="transactions-list" class="space-y-3">
           <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
         </div>
@@ -392,9 +374,6 @@
       unsubscribeFirestore = onSnapshot(q, (snapshot) => {
         allTransactions = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
         filterAndRenderApp();
-      }, (error) => {
-        console.error("Erro ao carregar do Firestore:", error);
-        document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-8 text-sm">Erro ao carregar dados da nuvem. Verifique sua conexão ou regras do Firestore.</p>';
       });
     }
 
@@ -412,26 +391,17 @@
 
     document.getElementById('filter-month').addEventListener('change', filterAndRenderApp);
 
-    window.filterAndRenderApp = function() {
+    function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
-      const searchInput = document.getElementById('search-input');
-      const searchText = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
       currentFilteredTransactions = allTransactions
-        .filter(t => {
-          const matchMonth = t.dueDate && t.dueDate.startsWith(selectedMonth);
-          const matchSearch = !searchText || 
-            (t.description && t.description.toLowerCase().includes(searchText)) ||
-            (t.category && t.category.toLowerCase().includes(searchText));
-          return matchMonth && matchSearch;
-        })
+        .filter(t => t.dueDate && t.dueDate.startsWith(selectedMonth))
         .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
       renderApp(currentFilteredTransactions);
       if (!document.getElementById('view-chart').classList.contains('hidden')) {
         renderCharts(currentFilteredTransactions);
       }
-    };
+    }
 
     function addMonthsToDate(dateString, monthsToAdd) {
       const [year, month, day] = dateString.split('-').map(Number);
@@ -562,7 +532,7 @@
 
       const listEl = document.getElementById('transactions-list');
       if (!transactions.length) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para este período/filtro. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
         return;
       }
 
@@ -677,7 +647,7 @@
     }
 
     // EXIBIR LANÇAMENTOS DO ITEM CLICADO NO GRÁFICO
-    window.showChartCategoryDetails = function(type, filterKey) {
+    function showChartCategoryDetails(type, filterKey) {
       const container = document.getElementById('chart-details-container');
       const title = document.getElementById('chart-details-title');
       const list = document.getElementById('chart-details-list');
