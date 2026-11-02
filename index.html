@@ -67,7 +67,7 @@
     <!-- Cabeçalho -->
     <header class="bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <!-- Título e Tag Alinhados -->
+        <!-- Título e Tag Alinhados e na Cor Azul -->
         <div class="flex flex-col items-start gap-1">
           <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
             <span class="text-pink-400">💖</span> Família Sartorelli
@@ -172,6 +172,7 @@
             </select>
           </div>
 
+          <!-- Categoria com mais espaço e texto ajustado -->
           <div class="sm:col-span-2">
             <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
             <select id="category" class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm truncate"></select>
@@ -233,7 +234,7 @@
             <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
           </div>
           
-          <!-- Campo de Busca -->
+          <!-- Campo de Busca Restaurado -->
           <div class="relative w-full sm:w-64">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-xs">🔍</span>
             <input 
@@ -393,7 +394,7 @@
         filterAndRenderApp();
       }, (error) => {
         console.error("Erro ao carregar do Firestore:", error);
-        document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-8 text-sm">Erro ao carregar dados da nuvem. Verifique sua conexão.</p>';
+        document.getElementById('transactions-list').innerHTML = '<p class="text-rose-400 text-center py-8 text-sm">Erro ao carregar dados da nuvem. Verifique sua conexão ou regras do Firestore.</p>';
       });
     }
 
@@ -561,7 +562,7 @@
 
       const listEl = document.getElementById('transactions-list');
       if (!transactions.length) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para os filtros atuais. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado para este período/filtro. 🌸</p>';
         return;
       }
 
@@ -603,7 +604,9 @@
       }).join('');
     }
 
+    // RENDERIZAÇÃO E INTERATIVIDADE DOS GRÁFICOS DE PIZZA
     function renderCharts(transactions) {
+      // 1. Gráfico de Despesas
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
@@ -636,6 +639,7 @@
         });
       }
 
+      // 2. Gráfico de Receitas
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
@@ -672,6 +676,7 @@
       }
     }
 
+    // EXIBIR LANÇAMENTOS DO ITEM CLICADO NO GRÁFICO
     window.showChartCategoryDetails = function(type, filterKey) {
       const container = document.getElementById('chart-details-container');
       const title = document.getElementById('chart-details-title');
