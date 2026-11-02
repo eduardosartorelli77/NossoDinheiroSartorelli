@@ -17,10 +17,10 @@
     }
   </style>
 </head>
-<body class="text-slate-700 p-4 sm:p-8 min-h-screen">
+<body class="text-slate-700 p-2 sm:p-8 min-h-screen">
 
   <!-- ==================== TELA DE LOGIN ==================== -->
-  <div id="login-screen" class="max-w-md mx-auto my-12 bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-pink-100 flex flex-col justify-center min-h-[400px]">
+  <div id="login-screen" class="max-w-md mx-auto my-6 sm:my-12 bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-3xl shadow-md border border-pink-100 flex flex-col justify-center min-h-[380px]">
     <div class="text-center mb-6">
       <span class="text-4xl">💖</span>
       <h1 class="text-2xl font-bold text-slate-800 mt-2">Família Sartorelli</h1>
@@ -63,96 +63,99 @@
   </div>
 
   <!-- ==================== PAINEL FINANCEIRO (PROTEGIDO) ==================== -->
-  <div class="max-w-4xl mx-auto space-y-8 hidden" id="app">
+  <div class="max-w-4xl mx-auto space-y-4 sm:space-y-8 hidden" id="app">
     
     <!-- Cabeçalho -->
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-pink-100/60">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <span class="text-pink-400">💖</span> Família Sartorelli
-        </h1>
-        <p class="text-xs text-pink-400 mt-1 font-medium" id="status-conexao">Sincronizado ✨</p>
-      </div>
-      <div class="flex items-center gap-2 flex-wrap">
-        <!-- Navegação de Menus/Abas -->
-        <button 
-          id="btn-tab-list" 
-          onclick="switchTab('list')"
-          class="bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer"
-        >
-          📋 Lançamentos
-        </button>
-        
-        <!-- Botão Gráfico (Apenas Ícone) -->
-        <button 
-          id="btn-tab-chart" 
-          onclick="switchTab('chart')"
-          class="bg-white/80 text-slate-600 hover:bg-pink-50 p-2.5 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center"
-          title="Gráficos"
-        >
-          📊
-        </button>
-
-        <!-- Botão Backup (Apenas Ícone) -->
-        <button 
-          onclick="exportBackup()" 
-          class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 p-2.5 rounded-2xl text-sm font-semibold border border-emerald-200 transition cursor-pointer flex items-center justify-center"
-          title="Fazer Backup Local"
-        >
-          💾
-        </button>
-
-        <!-- Filtro por Mês -->
-        <div class="flex items-center gap-2 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-2 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
-          <span class="text-sm">📅</span>
-          <label for="filter-month" class="text-xs font-semibold text-pink-600 uppercase tracking-wider cursor-pointer">Mês:</label>
-          <input 
-            type="month" 
-            id="filter-month" 
-            onclick="this.showPicker()"
-            class="bg-transparent text-sm font-medium text-slate-700 focus:outline-none cursor-pointer"
-          >
+    <header class="flex flex-col gap-4 bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <span class="text-pink-400">💖</span> Família Sartorelli
+          </h1>
+          <p class="text-[11px] sm:text-xs text-pink-400 mt-0.5 font-medium" id="status-conexao">Sincronizado ✨</p>
         </div>
         <button 
           id="btn-logout" 
-          class="flex items-center gap-1.5 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-2 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer"
+          class="flex items-center gap-1 bg-rose-100/60 hover:bg-rose-200/60 text-rose-600 px-3 py-1.5 rounded-2xl text-xs font-medium border border-rose-200/50 transition cursor-pointer"
         >
           <span>🚪</span> Sair
         </button>
       </div>
+
+      <div class="flex items-center gap-2 flex-wrap justify-between pt-2 border-t border-pink-50">
+        <!-- Navegação de Menus/Abas -->
+        <div class="flex items-center gap-2">
+          <button 
+            id="btn-tab-list" 
+            onclick="switchTab('list')"
+            class="bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer"
+          >
+            📋 Lançamentos
+          </button>
+          
+          <button 
+            id="btn-tab-chart" 
+            onclick="switchTab('chart')"
+            class="bg-white/80 text-slate-600 hover:bg-pink-50 p-2 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center"
+            title="Gráficos"
+          >
+            📊
+          </button>
+
+          <button 
+            onclick="exportBackup()" 
+            class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 p-2 rounded-2xl text-sm font-semibold border border-emerald-200 transition cursor-pointer flex items-center justify-center"
+            title="Fazer Backup Local"
+          >
+            💾
+          </button>
+        </div>
+
+        <!-- Filtro por Mês -->
+        <div class="flex items-center gap-1.5 bg-gradient-to-r from-pink-50 to-purple-50 px-3 py-1.5 rounded-2xl border border-pink-100/80 shadow-xs hover:border-pink-300 transition cursor-pointer" onclick="document.getElementById('filter-month').showPicker()">
+          <span class="text-xs">📅</span>
+          <label for="filter-month" class="text-[10px] sm:text-xs font-semibold text-pink-600 uppercase tracking-wider cursor-pointer">Mês:</label>
+          <input 
+            type="month" 
+            id="filter-month" 
+            onclick="this.showPicker()"
+            class="bg-transparent text-xs sm:text-sm font-medium text-slate-700 focus:outline-none cursor-pointer max-w-[125px]"
+          >
+        </div>
+      </div>
     </header>
 
     <!-- Cards de Resumo -->
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-      <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-pink-100/50">
-        <p class="text-[11px] text-pink-400 font-bold uppercase tracking-wider">Saldo do Mês</p>
-        <p id="total-balance" class="text-2xl font-bold mt-2 text-slate-800">R$ 0,00</p>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+      <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-pink-100/50">
+        <p class="text-[10px] sm:text-[11px] text-pink-400 font-bold uppercase tracking-wider">Saldo do Mês</p>
+        <p id="total-balance" class="text-lg sm:text-2xl font-bold mt-1 text-slate-800">R$ 0,00</p>
       </div>
-      <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-emerald-100/50">
-        <p class="text-[11px] text-emerald-500 font-bold uppercase tracking-wider flex items-center gap-1">
+      <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-emerald-100/50">
+        <p class="text-[10px] sm:text-[11px] text-emerald-500 font-bold uppercase tracking-wider flex items-center gap-1">
           🌱 Receitas
         </p>
-        <p id="total-income" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
+        <p id="total-income" class="text-lg sm:text-2xl font-bold text-slate-800 mt-1">R$ 0,00</p>
       </div>
-      <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-rose-100/50">
-        <p class="text-[11px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
+      <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-rose-100/50">
+        <p class="text-[10px] sm:text-[11px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
           🌷 Despesas Pagas
         </p>
-        <p id="total-expense" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
+        <p id="total-expense" class="text-lg sm:text-2xl font-bold text-slate-800 mt-1">R$ 0,00</p>
       </div>
-      <div class="bg-white/90 backdrop-blur-sm p-5 rounded-3xl shadow-sm border border-amber-100/50">
-        <p class="text-[11px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">
-          ⏳ Despesas Pendentes
+      <div class="bg-white/90 backdrop-blur-sm p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-amber-100/50">
+        <p class="text-[10px] sm:text-[11px] text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">
+          ⏳ Pendentes
         </p>
-        <p id="total-pending" class="text-2xl font-bold text-slate-800 mt-2">R$ 0,00</p>
+        <p id="total-pending" class="text-lg sm:text-2xl font-bold text-slate-800 mt-1">R$ 0,00</p>
       </div>
     </div>
 
     <!-- SEÇÃO 1: FORMULÁRIO E LISTA DE LANÇAMENTOS -->
-    <div id="view-list" class="space-y-8">
+    <div id="view-list" class="space-y-4 sm:space-y-8">
       <!-- Formulário de Adição / Edição -->
-      <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60">
-        <h2 id="form-title" class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+      <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
+        <h2 id="form-title" class="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <span class="text-pink-400">✨</span> Novo Lançamento
         </h2>
         <form id="transaction-form" class="grid grid-cols-1 sm:grid-cols-6 gap-3">
@@ -164,7 +167,7 @@
               type="text" 
               id="description" 
               placeholder="Ex: Conta de Luz, Mercado..." 
-              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
               required
             />
           </div>
@@ -176,7 +179,7 @@
               step="0.01" 
               id="amount" 
               placeholder="0,00" 
-              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
               required
             />
           </div>
@@ -186,7 +189,7 @@
             <select 
               id="type" 
               onchange="handleTypeChange()"
-              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
             >
               <option value="expense">Despesa</option>
               <option value="income">Receita</option>
@@ -197,7 +200,7 @@
             <label class="text-xs font-medium text-slate-500 mb-1 block">Categoria</label>
             <select 
               id="category" 
-              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
             >
               <!-- Preenchido via script -->
             </select>
@@ -208,7 +211,7 @@
             <label class="text-xs font-medium text-slate-500 mb-1 block">Quem Recebeu?</label>
             <select 
               id="person" 
-              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
+              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm"
             >
               <option value="Ambos">Ambos</option>
               <option value="Marido">Marido</option>
@@ -218,12 +221,12 @@
 
           <!-- Campo de Vencimento -->
           <div id="date-container" class="sm:col-span-3">
-            <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento</label>
+            <label for="dueDate" class="text-xs font-medium text-slate-500 mb-1 block">Vencimento / Data</label>
             <input 
               type="date" 
               id="dueDate" 
               onclick="this.showPicker()"
-              class="w-full px-4 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer"
+              class="w-full px-3.5 py-2.5 rounded-2xl border border-pink-100 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-sm cursor-pointer"
               required
             />
           </div>
@@ -233,6 +236,39 @@
             <div class="flex items-center gap-2">
               <input type="checkbox" id="isPaid" class="w-4 h-4 text-emerald-500 rounded border-pink-200 focus:ring-emerald-300 accent-emerald-500">
               <label for="isPaid" class="text-xs font-medium text-slate-700 cursor-pointer">Pago</label>
+            </div>
+          </div>
+
+          <!-- OPÇÕES DE PARCELAMENTO (NOVO) -->
+          <div id="installment-container" class="sm:col-span-6 bg-purple-50/40 p-3.5 rounded-2xl border border-purple-100 mt-1">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="isInstallment" onchange="toggleInstallmentOptions()" class="w-4 h-4 text-purple-600 rounded border-purple-200 focus:ring-purple-300 accent-purple-600">
+                <label for="isInstallment" class="text-xs font-semibold text-purple-800 cursor-pointer">Parcelar este lançamento?</label>
+              </div>
+
+              <div id="installment-fields" class="hidden flex items-center gap-2 pl-6 sm:pl-0">
+                <label for="installmentCount" class="text-xs font-medium text-slate-600">Nº de Parcelas:</label>
+                <select id="installmentCount" class="px-3 py-1.5 rounded-xl border border-purple-200 bg-white text-xs font-semibold text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                  <option value="2">2x</option>
+                  <option value="3">3x</option>
+                  <option value="4">4x</option>
+                  <option value="5">5x</option>
+                  <option value="6">6x</option>
+                  <option value="7">7x</option>
+                  <option value="8">8x</option>
+                  <option value="9">9x</option>
+                  <option value="10">10x</option>
+                  <option value="11">11x</option>
+                  <option value="12">12x</option>
+                  <option value="18">18x</option>
+                  <option value="24">24x</option>
+                  <option value="36">36x</option>
+                  <option value="48">48x</option>
+                  <option value="60">60x</option>
+                  <option value="72">72x</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -256,23 +292,12 @@
         </form>
       </div>
 
-      <!-- Lista de Transações (Contas do Mês) -->
-      <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <h2 class="text-lg font-semibold text-slate-800">Contas do Mês</h2>
-          
-          <!-- Campo de Busca por Descrição -->
-          <div class="relative w-full sm:w-64">
-            <input 
-              type="text" 
-              id="search-description" 
-              placeholder="🔍 Buscar descrição..." 
-              oninput="applySearchFilter()"
-              class="w-full px-4 py-2 rounded-2xl border border-pink-100 bg-pink-50/20 focus:outline-none focus:ring-2 focus:ring-pink-300 text-xs text-slate-700"
-            />
-          </div>
+      <!-- Lista de Transações -->
+      <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-base sm:text-lg font-semibold text-slate-800">Contas do Mês</h2>
+          <span class="text-[10px] sm:text-xs text-pink-400 font-medium bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">Ordenado por Vencimento</span>
         </div>
-
         <div id="transactions-list" class="space-y-3">
           <p class="text-slate-400 text-center py-6 text-sm">Carregando dados da nuvem...</p>
         </div>
@@ -280,24 +305,24 @@
     </div>
 
     <!-- SEÇÃO 2: GRÁFICOS (DESPESAS E RECEITAS) -->
-    <div id="view-chart" class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden space-y-6">
-      <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+    <div id="view-chart" class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100/60 hidden space-y-6">
+      <h2 class="text-base sm:text-lg font-semibold text-slate-800 flex items-center gap-2">
         <span class="text-pink-400">📊</span> Gráficos de Gastos e Receitas do Mês
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <!-- Gráfico de Despesas -->
+        <!-- Gráfico de Despesas (Todas) -->
         <div class="bg-rose-50/30 p-4 rounded-2xl border border-rose-100 flex flex-col items-center">
-          <h3 class="text-sm font-bold text-rose-500 mb-2">🌷 Despesas por Categoria (Todas)</h3>
-          <div class="w-full max-w-[300px]">
+          <h3 class="text-xs sm:text-sm font-bold text-rose-500 mb-2">🌷 Despesas por Categoria (Todas)</h3>
+          <div class="w-full max-w-[280px]">
             <canvas id="expenseChart"></canvas>
           </div>
         </div>
 
-        <!-- Gráfico de Receitas -->
+        <!-- Gráfico de Receitas (Por Pessoa) -->
         <div class="bg-emerald-50/30 p-4 rounded-2xl border border-emerald-100 flex flex-col items-center">
-          <h3 class="text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Pessoa</h3>
-          <div class="w-full max-w-[300px]">
+          <h3 class="text-xs sm:text-sm font-bold text-emerald-600 mb-2">🌱 Receitas por Pessoa</h3>
+          <div class="w-full max-w-[280px]">
             <canvas id="incomeChart"></canvas>
           </div>
         </div>
@@ -334,8 +359,8 @@
     let unsubscribeFirestore = null;
     let expenseChartInstance = null;
     let incomeChartInstance = null;
+    let currentFilteredTransactions = [];
     let allTransactions = [];
-    let currentMonthTransactions = [];
 
     // Função de Backup Local (Exportar JSON)
     window.exportBackup = function() {
@@ -353,6 +378,17 @@
       downloadAnchor.remove();
     };
 
+    // Alternar visibilidade das opções de parcelamento
+    window.toggleInstallmentOptions = function() {
+      const isInstallment = document.getElementById('isInstallment').checked;
+      const installmentFields = document.getElementById('installment-fields');
+      if (isInstallment) {
+        installmentFields.classList.remove('hidden');
+      } else {
+        installmentFields.classList.add('hidden');
+      }
+    };
+
     // Alternar entre abas
     window.switchTab = function(tabName) {
       const viewList = document.getElementById('view-list');
@@ -364,13 +400,13 @@
         viewList.classList.remove('hidden');
         viewChart.classList.add('hidden');
         btnTabList.className = "bg-pink-100 text-pink-700 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-200 transition cursor-pointer";
-        btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 p-2.5 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center";
+        btnTabChart.className = "bg-white/80 text-slate-600 hover:bg-pink-50 p-2 rounded-2xl text-sm font-semibold border border-pink-100 transition cursor-pointer flex items-center justify-center";
       } else {
         viewList.classList.add('hidden');
         viewChart.classList.remove('hidden');
-        btnTabChart.className = "bg-pink-100 p-2.5 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
+        btnTabChart.className = "bg-pink-100 text-pink-700 p-2 rounded-2xl text-sm font-semibold border border-pink-200 transition cursor-pointer flex items-center justify-center";
         btnTabList.className = "bg-white/80 text-slate-600 hover:bg-pink-50 px-3 py-2 rounded-2xl text-xs font-semibold border border-pink-100 transition cursor-pointer";
-        renderCharts(currentMonthTransactions);
+        renderCharts(currentFilteredTransactions);
       }
     };
 
@@ -480,69 +516,98 @@
     function filterAndRenderApp() {
       const selectedMonth = document.getElementById('filter-month').value;
       
-      // Filtra estritamente os lançamentos do mês selecionado
-      currentMonthTransactions = allTransactions.filter(t => {
+      currentFilteredTransactions = allTransactions.filter(t => {
         if (!t.dueDate) return false;
         return t.dueDate.startsWith(selectedMonth);
       });
 
-      currentMonthTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      currentFilteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
-      // Atualiza os cards de resumo e gráficos com base no mês completo
-      updateSummaryCards(currentMonthTransactions);
-      renderCharts(currentMonthTransactions);
-
-      // Aplica o filtro de busca localmente na lista
-      applySearchFilter();
+      renderApp(currentFilteredTransactions);
+      renderCharts(currentFilteredTransactions);
     }
 
-    // Função separada para filtrar a lista na tela de acordo com a busca por descrição
-    window.applySearchFilter = function() {
-      const searchTerm = document.getElementById('search-description').value.toLowerCase().trim();
-      
-      const filteredList = currentMonthTransactions.filter(t => {
-        if (!searchTerm) return true;
-        return t.description && t.description.toLowerCase().includes(searchTerm);
-      });
+    // Auxiliar para calcular a data do próximo mês mantendo o dia
+    function addMonthsToDate(dateString, monthsToAdd) {
+      const parts = dateString.split('-');
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
 
-      renderTransactionsList(filteredList);
-    };
+      const d = new Date(year, month, day);
+      d.setMonth(d.getMonth() + monthsToAdd);
+
+      // Tratar viradas de mês com dias 29, 30, 31
+      if (d.getDate() !== day) {
+        d.setDate(0); 
+      }
+
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+
+      return `${yyyy}-${mm}-${dd}`;
+    }
 
     // Salvar ou Atualizar transação
     document.getElementById('transaction-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const editingId = document.getElementById('editing-id').value;
-      const description = document.getElementById('description').value;
+      const rawDescription = document.getElementById('description').value;
       const amount = parseFloat(document.getElementById('amount').value);
       const type = document.getElementById('type').value;
       const category = document.getElementById('category').value;
       const person = type === 'income' ? document.getElementById('person').value : 'Nosso Lar';
-      const dueDate = document.getElementById('dueDate').value;
+      const baseDueDate = document.getElementById('dueDate').value;
       const isPaid = type === 'income' ? true : document.getElementById('isPaid').checked;
+
+      const isInstallment = document.getElementById('isInstallment').checked;
+      const installmentCount = isInstallment ? parseInt(document.getElementById('installmentCount').value, 10) : 1;
 
       try {
         if (editingId) {
+          // Edição simples de 1 registro
           const docRef = doc(db, 'transactions', editingId);
           await updateDoc(docRef, {
-            description,
+            description: rawDescription,
             amount,
             type,
             category,
             person,
-            dueDate,
+            dueDate: baseDueDate,
             isPaid
           });
         } else {
-          await addDoc(collection(db, 'transactions'), {
-            description,
-            amount,
-            type,
-            category,
-            person,
-            dueDate,
-            isPaid,
-            createdAt: new Date().toISOString()
-          });
+          // Novo Lançamento (Com suporte a parcelamento)
+          if (isInstallment && installmentCount > 1) {
+            for (let i = 0; i < installmentCount; i++) {
+              const installmentDueDate = addMonthsToDate(baseDueDate, i);
+              const descWithParcel = `${rawDescription} (${i + 1}/${installmentCount})`;
+              
+              await addDoc(collection(db, 'transactions'), {
+                description: descWithParcel,
+                amount: amount,
+                type,
+                category,
+                person,
+                dueDate: installmentDueDate,
+                isPaid: i === 0 ? isPaid : (type === 'income'), // Apenas a 1ª herda o checkbox se despesa
+                createdAt: new Date().toISOString()
+              });
+            }
+          } else {
+            // Lançamento normal sem parcelas
+            await addDoc(collection(db, 'transactions'), {
+              description: rawDescription,
+              amount,
+              type,
+              category,
+              person,
+              dueDate: baseDueDate,
+              isPaid,
+              createdAt: new Date().toISOString()
+            });
+          }
         }
 
         cancelEdit();
@@ -571,6 +636,9 @@
       document.getElementById('dueDate').value = t.dueDate;
       document.getElementById('isPaid').checked = !!t.isPaid;
 
+      // Oculta parcelamento na edição para evitar conflitos
+      document.getElementById('installment-container').classList.add('hidden');
+
       document.getElementById('form-title').innerHTML = '<span class="text-amber-500">✏️</span> Editar Lançamento';
       document.getElementById('btn-submit').innerText = 'Atualizar Lançamento 🌸';
       document.getElementById('btn-cancel-edit').classList.remove('hidden');
@@ -584,6 +652,11 @@
       document.getElementById('amount').value = '';
       document.getElementById('type').value = 'expense';
       document.getElementById('dueDate').value = new Date().toISOString().split('T')[0];
+      
+      document.getElementById('isInstallment').checked = false;
+      document.getElementById('installmentCount').value = '2';
+      toggleInstallmentOptions();
+      document.getElementById('installment-container').classList.remove('hidden');
 
       document.getElementById('form-title').innerHTML = '<span class="text-pink-400">✨</span> Novo Lançamento';
       document.getElementById('btn-submit').innerText = 'Guardar Lançamento 🌸';
@@ -614,7 +687,9 @@
       }
     };
 
-    function updateSummaryCards(transactions) {
+    function renderApp(transactions) {
+      const listEl = document.getElementById('transactions-list');
+      
       let totalIncome = 0;
       let totalExpensePaid = 0;
       let totalExpensePending = 0;
@@ -634,17 +709,13 @@
       const balance = totalIncome - totalExpensePaid;
 
       document.getElementById('total-balance').innerText = `R$ ${balance.toFixed(2)}`;
-      document.getElementById('total-balance').className = `text-2xl font-bold mt-2 ${balance >= 0 ? 'text-slate-800' : 'text-rose-500'}`;
+      document.getElementById('total-balance').className = `text-lg sm:text-2xl font-bold mt-1 ${balance >= 0 ? 'text-slate-800' : 'text-rose-500'}`;
       document.getElementById('total-income').innerText = `R$ ${totalIncome.toFixed(2)}`;
       document.getElementById('total-expense').innerText = `R$ ${totalExpensePaid.toFixed(2)}`;
       document.getElementById('total-pending').innerText = `R$ ${totalExpensePending.toFixed(2)}`;
-    }
-
-    function renderTransactionsList(transactions) {
-      const listEl = document.getElementById('transactions-list');
 
       if (transactions.length === 0) {
-        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Nenhum lançamento encontrado. 🌸</p>';
+        listEl.innerHTML = '<p class="text-slate-400 text-center py-8 text-sm">Sem contas cadastradas para este mês. 🌸</p>';
         return;
       }
 
@@ -657,35 +728,38 @@
         const formattedDate = `${day}/${month}/${year}`;
 
         return `
-          <div class="flex items-center justify-between p-4 rounded-2xl border transition ${t.isPaid ? 'border-pink-50 bg-white/60' : 'border-rose-200 bg-rose-50/20 shadow-xs'} hover:shadow-md">
-            <div class="flex items-center gap-3.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl border transition ${t.isPaid ? 'border-pink-50 bg-white/60' : 'border-rose-200 bg-rose-50/20 shadow-xs'} hover:shadow-md gap-3">
+            <div class="flex items-center gap-3">
               ${!isInc ? `
-                <button onclick="togglePaidStatus('${t.id}', ${t.isPaid})" class="w-6 h-6 rounded-lg border flex items-center justify-center transition cursor-pointer ${t.isPaid ? 'bg-emerald-400 border-emerald-400 text-white' : 'border-pink-200 bg-white hover:border-pink-400'}" title="Marcar como Pago">
+                <button onclick="togglePaidStatus('${t.id}', ${t.isPaid})" class="w-6 h-6 rounded-lg border flex items-center justify-center transition cursor-pointer shrink-0 ${t.isPaid ? 'bg-emerald-400 border-emerald-400 text-white' : 'border-pink-200 bg-white hover:border-pink-400'}" title="Marcar como Pago">
                   ${t.isPaid ? '✓' : ''}
                 </button>
               ` : ''}
-              <div class="w-10 h-10 rounded-2xl border flex items-center justify-center text-lg ${iconBg}">
+              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl border flex items-center justify-center text-base sm:text-lg shrink-0 ${iconBg}">
                 ${categoryIcon}
               </div>
-              <div>
-                <p class="font-medium text-slate-800 text-sm ${t.isPaid && t.type === 'expense' ? 'line-through text-slate-400' : ''}">${t.description}</p>
-                <div class="flex items-center gap-2 mt-0.5 flex-wrap">
-                  <span class="text-[11px] bg-pink-50/80 text-pink-600 px-2 py-0.5 rounded-md font-medium border border-pink-100/50">${t.category}</span>
-                  ${t.type === 'income' ? `<span class="text-xs text-slate-400">• ${t.person}</span>` : ''}
-                  <span class="text-xs ${t.isPaid ? 'text-slate-400' : 'text-rose-500 font-medium'}">• Venc: ${formattedDate}</span>
+              <div class="min-w-0 flex-1">
+                <p class="font-medium text-slate-800 text-sm truncate ${t.isPaid && t.type === 'expense' ? 'line-through text-slate-400' : ''}">${t.description}</p>
+                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span class="text-[10px] bg-pink-50/80 text-pink-600 px-2 py-0.5 rounded-md font-medium border border-pink-100/50">${t.category}</span>
+                  ${t.type === 'income' ? `<span class="text-[11px] text-slate-400">• ${t.person}</span>` : ''}
+                  <span class="text-[11px] ${t.isPaid ? 'text-slate-400' : 'text-rose-500 font-medium'}">• Venc: ${formattedDate}</span>
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="font-bold text-sm ${isInc ? 'text-emerald-500' : 'text-slate-700'}">
+            
+            <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100/60">
+              <span class="font-bold text-sm sm:text-base ${isInc ? 'text-emerald-500' : 'text-slate-700'}">
                 ${isInc ? '+' : '-'} R$ ${t.amount.toFixed(2)}
               </span>
-              <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1 cursor-pointer" title="Editar Lançamento">
-                ✏️
-              </button>
-              <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1 cursor-pointer" title="Excluir Lançamento">
-                🗑️
-              </button>
+              <div class="flex items-center gap-1">
+                <button onclick="startEditTransaction('${t.id}')" class="text-slate-400 hover:text-amber-500 transition p-1.5 cursor-pointer" title="Editar Lançamento">
+                  ✏️
+                </button>
+                <button onclick="deleteTransaction('${t.id}')" class="text-slate-300 hover:text-rose-400 transition p-1.5 cursor-pointer" title="Excluir Lançamento">
+                  🗑️
+                </button>
+              </div>
             </div>
           </div>
         `;
@@ -694,7 +768,6 @@
 
     // Renderização dos Gráficos de Pizza
     function renderCharts(transactions) {
-      // 1. Gráfico de Despesas (TODAS as despesas do mês)
       const ctxExpense = document.getElementById('expenseChart');
       if (ctxExpense) {
         const expenseTotals = {};
@@ -717,12 +790,11 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
           }
         });
       }
 
-      // 2. Gráfico de Receitas (Por Pessoa do mês)
       const ctxIncome = document.getElementById('incomeChart');
       if (ctxIncome) {
         const incomeTotals = {};
@@ -746,7 +818,7 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
           }
         });
       }
