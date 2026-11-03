@@ -11,16 +11,109 @@
   <!-- Google Fonts (Inter) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { 
+    body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #FDF2F8 0%, #F5F3FF 50%, #F0FDF4 100%);
+    }
+
+    /* Identidade visual exclusiva da tela de login */
+    body:has(#login-screen:not(.hidden)) {
+      background:
+        radial-gradient(ellipse at 12% 18%, rgba(255,255,255,.78) 0%, transparent 34%),
+        radial-gradient(ellipse at 88% 82%, rgba(251,207,232,.72) 0%, transparent 38%),
+        linear-gradient(135deg, #FCE7F3 0%, #F9A8D4 42%, #E9A8D8 72%, #F5D0FE 100%);
+      background-attachment: fixed;
+    }
+
+    #login-screen {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      background: linear-gradient(145deg, rgba(255,255,255,.76), rgba(255,245,251,.48)) !important;
+      border: 1px solid rgba(255,255,255,.78) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(155%);
+      backdrop-filter: blur(24px) saturate(155%);
+      box-shadow:
+        0 24px 65px rgba(157, 23, 77, .16),
+        0 8px 24px rgba(131, 24, 67, .08),
+        inset 0 1px 0 rgba(255,255,255,.9) !important;
+    }
+
+    #login-screen::before,
+    #login-screen::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 9999px;
+      pointer-events: none;
+      filter: blur(2px);
+    }
+
+    #login-screen::before {
+      width: 190px;
+      height: 190px;
+      top: -112px;
+      right: -72px;
+      background: linear-gradient(135deg, rgba(244,114,182,.26), rgba(255,255,255,.08));
+    }
+
+    #login-screen::after {
+      width: 150px;
+      height: 150px;
+      bottom: -95px;
+      left: -65px;
+      background: linear-gradient(135deg, rgba(232,121,249,.2), rgba(251,207,232,.12));
+    }
+
+    #login-screen input {
+      background: rgba(255,255,255,.58) !important;
+      border: 1px solid rgba(219, 112, 165, .24) !important;
+      box-shadow: inset 0 1px 3px rgba(157,23,77,.035);
+      transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    #login-screen input:focus {
+      background: rgba(255,255,255,.86) !important;
+      border-color: rgba(219, 39, 119, .55) !important;
+      box-shadow: 0 0 0 4px rgba(244,114,182,.16), 0 4px 14px rgba(157,23,77,.06);
+    }
+
+    #login-screen button[type="submit"] {
+      background: linear-gradient(110deg, #DB4F98 0%, #EC6AAE 48%, #C96DD8 100%) !important;
+      box-shadow: 0 10px 22px rgba(190, 48, 125, .22), inset 0 1px 0 rgba(255,255,255,.28) !important;
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    }
+
+    #login-screen button[type="submit"]:hover {
+      filter: brightness(1.045) saturate(1.06);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 27px rgba(190, 48, 125, .28), inset 0 1px 0 rgba(255,255,255,.34) !important;
+    }
+
+    #login-screen button[type="submit"]:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      #login-screen {
+        margin-top: 8vh;
+        margin-bottom: 8vh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #login-screen *,
+      #login-screen *::before,
+      #login-screen *::after {
+        transition: none !important;
+      }
     }
   </style>
 </head>
 <body class="text-slate-700 p-2 sm:p-8 min-h-screen">
 
   <!-- ==================== TELA DE LOGIN ==================== -->
-  <div id="login-screen" class="max-w-md mx-auto my-6 sm:my-12 bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-3xl shadow-md border border-pink-100 flex flex-col justify-center min-h-[380px]">
+  <div id="login-screen" class="max-w-md mx-auto my-6 sm:my-12 p-6 sm:p-8 rounded-3xl flex flex-col justify-center min-h-[380px]">
     <div class="text-center mb-6">
       <span class="text-4xl">💖</span>
       <h1 class="text-2xl font-bold text-slate-800 mt-2">Família Sartorelli</h1>
